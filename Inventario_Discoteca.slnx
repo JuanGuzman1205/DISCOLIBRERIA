@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Biblioteca_Discoteca/Biblioteca_Discoteca.csproj" />
+  <Project Path="Consola_Discoteca/Consola_Discoteca.csproj" />
+  <Project Path="Test_Discoteca/Test_Discoteca.csproj" />
+</Solution>
