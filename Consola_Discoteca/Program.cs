@@ -1,13 +1,11 @@
 ﻿using Biblioteca_Discoteca.Implementaciones;
 using Biblioteca_Discoteca.Interfaces;
-
+using Biblioteca_Discoteca.Nucleo;
 try
 {
     IConexion conexion = new Conexion();
-    conexion.StringConexion = "server=localhost;database=SistemaGestion;Integrated Security=True;TrustServerCertificate=true;";
+    conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
     var lista_empleados = conexion.Empleados!.ToList();
-    Console.WriteLine("--- VERIFICACIÓN DE ENTIDADES ---");
-
     Console.WriteLine($"Cajas: {conexion.Cajas!.ToList().Count}");
     Console.WriteLine($"Categorías: {conexion.CategoriaProductos!.ToList().Count}");
     Console.WriteLine($"Clientes: {conexion.Clientes!.ToList().Count}");
@@ -30,10 +28,6 @@ try
     Console.WriteLine($"Reparaciones: {conexion.Reparaciones!.ToList().Count}");
     Console.WriteLine($"Reservas: {conexion.Reservas!.ToList().Count}");
     Console.WriteLine($"Ventas: {conexion.Ventas!.ToList().Count}");
-
-    Console.WriteLine("---------------------------------");
-    Console.WriteLine("¡Conexión y mapeo de todas las entidades exitosos!");
-
 }
 catch (Exception ex)
 {

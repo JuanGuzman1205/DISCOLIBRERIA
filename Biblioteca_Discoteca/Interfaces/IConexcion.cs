@@ -1,5 +1,6 @@
 ﻿using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,5 +33,7 @@ namespace Biblioteca_Discoteca.Interfaces
         public DbSet<Reparaciones>? Reparaciones { get; set; }
         public DbSet<Reservas>? Reservas { get; set; }
         public DbSet<Ventas>? Ventas { get; set; }
+        int SaveChanges();
+        EntityEntry<T> Entry<T>(T entity) where T : class;
     }
 }

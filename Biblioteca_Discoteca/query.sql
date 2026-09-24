@@ -1,11 +1,7 @@
--- =============================================
--- SCRIPT DE CREACIÓN DE BASE DE DATOS Y TABLAS
--- =============================================
+CREATE DATABASE SistemaGestion;
+GO;
 USE SistemaGestion;
 GO
-
--- 1. TABLAS INDEPENDIENTES (Sin FKs externas)
-
 CREATE TABLE Proveedores (
     IdProveedor INT IDENTITY(1,1) PRIMARY KEY,
     Nombre NVARCHAR(100) NOT NULL,
@@ -39,7 +35,7 @@ CREATE TABLE Mesas (
     Capacidad INT NOT NULL
 );
 
--- 2. TABLAS CON DEPENDENCIAS PRIMARIAS
+
 
 CREATE TABLE MetodosPagos (
     IdMetodoPago INT IDENTITY(1,1) PRIMARY KEY,
@@ -102,7 +98,6 @@ CREATE TABLE Reparaciones (
     CONSTRAINT FK_Reparaciones_Encargado FOREIGN KEY (IdEncargado) REFERENCES Empleados(IdEmpleado)
 );
 
--- 3. INVENTARIO Y PRODUCTOS (Relación Circular Manejada)
 
 CREATE TABLE Inventarios (
     IdInventario INT IDENTITY(1,1) PRIMARY KEY,
@@ -125,7 +120,6 @@ CREATE TABLE Productos (
     CONSTRAINT FK_Productos_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario)
 );
 
--- Agregar la FK a Inventarios hacia Productos después de crear la tabla Productos
 ALTER TABLE Inventarios
 ADD CONSTRAINT FK_Inventarios_Productos FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto);
 
@@ -138,7 +132,6 @@ CREATE TABLE ElementosInternos (
     CONSTRAINT FK_ElementosInternos_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario)
 );
 
--- Agregar la FK opcional de Inventarios hacia ElementosInternos
 ALTER TABLE Inventarios
 ADD CONSTRAINT FK_Inventarios_ElementosInternos FOREIGN KEY (IdElementoInterno) REFERENCES ElementosInternos(IdElementoInterno);
 
@@ -151,9 +144,8 @@ CREATE TABLE MovimientoInventarios (
     CONSTRAINT FK_MovimientoInventarios_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario)
 );
 
--- 4. VENTAS, FACTURACIÓN Y DETALLES
 
--- Definición inicial de Ventas y Facturas para resolver la referencia circular de FK 1:1
+
 CREATE TABLE Ventas (
     IdVenta INT IDENTITY(1,1) PRIMARY KEY,
     IdEmpleado INT NOT NULL,
@@ -182,7 +174,7 @@ CREATE TABLE Facturas (
 ALTER TABLE Ventas
 ADD CONSTRAINT FK_Ventas_Facturas FOREIGN KEY (IdFactura) REFERENCES Facturas(IdFactura);
 
--- 5. TABLAS DE DETALLE
+
 
 CREATE TABLE DetalleVentas (
     IdDetalleVenta INT IDENTITY(1,1) PRIMARY KEY,

@@ -1,4 +1,4 @@
-﻿namespace Test_Discoteca
+﻿namespace TestProject1
 {
     [TestClass]
     public sealed class Test1
