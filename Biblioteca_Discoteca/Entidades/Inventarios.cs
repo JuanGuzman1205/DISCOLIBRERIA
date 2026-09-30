@@ -16,6 +16,7 @@ namespace Inventario_Discoteca.Entidades
 
         [ForeignKey("IdProducto")]
         public Productos? _Producto { get; set; }
+        [ForeignKey("IdElementoInterno")]
         public List<ElementosInternos>? _ElementoInternos { get; set; }
         public List<MovimientoInventarios>? _MovimientoInventarios { get; set; }
     }
