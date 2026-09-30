@@ -1,0 +1,72 @@
+﻿using Biblioteca_Discoteca.Implementaciones;
+using Biblioteca_Discoteca.Interfaces;
+using Biblioteca_Discoteca.Nucleo;
+using Inventario_Discoteca.Entidades;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Test_Discoteca
+{
+    [TestClass]
+    public class TestFacturas
+    {
+        private IConexion conexion;
+        private Facturas? entidad = null;
+
+        public TestFacturas()
+        {
+            this.conexion = new Conexion();
+            this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+        }
+
+        [TestMethod]
+        public void Execute()
+        {
+            Insertar();
+            Consultar();
+            Actualizar();
+            Borrar();
+        }
+
+        public void Insertar()
+        {
+            this.entidad = new Facturas()
+            {
+                IdVenta = 1,
+                IdMesero = 1,
+                IdBarra = 1,
+                IdCaja = 1,
+                IdMetodoPago = 1,
+                FechaFacturacion = DateTime.Now
+            };
+
+            this.conexion.Facturas!.Add(this.entidad!);
+            this.conexion.SaveChanges();
+        }
+
+        public void Consultar()
+        {
+            var lista = this.conexion.Facturas!.ToList();
+            if (lista.Count <= 0)
+                throw new Exception("Lista vacía");
+        }
+
+        private void Actualizar()
+        {
+            this.entidad!.IdMetodoPago = 2;
+
+            var entry = this.conexion!.Entry<Facturas>(this.entidad);
+            entry.State = EntityState.Modified;
+            this.conexion!.SaveChanges();
+        }
+
+        private void Borrar()
+        {
+            this.conexion.Facturas!.Remove(this.entidad!);
+            this.conexion.SaveChanges();
+        }
+    }
+}
