@@ -4,6 +4,7 @@ using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,17 +12,15 @@ using System.Text;
 namespace Test_Discoteca
 {
     [TestClass]
-    public class TestDetalleReparaciones
+    public class TestDetalleReservas
     {
         private IConexion conexion;
-        private DetalleReparaciones? entidad = null;
-
-        public TestDetalleReparaciones()
+        private DetalleReservas? entidad = null;
+        public TestDetalleReservas()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
         }
-
         [TestMethod]
         public void Execute()
         {
@@ -30,41 +29,37 @@ namespace Test_Discoteca
             Actualizar();
             Borrar();
         }
-
         public void Insertar()
         {
-            this.entidad = new DetalleReparaciones()
+            this.entidad = new DetalleReservas()
             {
-                IdReparacion = 1,
-                IdElementoInterno = 1,
-                DescripcionReparacion = "Cambio de luces fundidas",
-                CostoReparacion = 85000
+                IdReserva = 1,
+                IdMesa = 1
             };
 
-            this.conexion.DetalleReparaciones!.Add(this.entidad!);
+            this.conexion.DetalleReservas!.Add(this.entidad!);
             this.conexion.SaveChanges();
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.DetalleReparaciones!.ToList();
+            var lista = this.conexion.DetalleReservas!.ToList();
             if (lista.Count <= 0)
                 throw new Exception("Lista vacía");
         }
 
         private void Actualizar()
         {
-            this.entidad!.DescripcionReparacion = "Cambio de luces fundidas y cableado";
-            this.entidad!.CostoReparacion = 120000;
+            this.entidad!.IdMesa = 2;
 
-            var entry = this.conexion!.Entry<DetalleReparaciones>(this.entidad);
+            var entry = this.conexion!.Entry<DetalleReservas>(this.entidad);
             entry.State = EntityState.Modified;
             this.conexion!.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.DetalleReparaciones!.Remove(this.entidad!);
+            this.conexion.DetalleReservas!.Remove(this.entidad!);
             this.conexion.SaveChanges();
         }
     }
