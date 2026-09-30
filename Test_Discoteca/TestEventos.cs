@@ -11,12 +11,12 @@ using System.Text;
 namespace Test_Discoteca
 {
     [TestClass]
-    public class TestElementosInternos
+    public class TestEventos
     {
         private IConexion conexion;
-        private ElementosInternos? entidad = null;
+        private Eventos? entidad = null;
 
-        public TestElementosInternos()
+        public TestEventos()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
@@ -33,39 +33,39 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            this.entidad = new ElementosInternos()
+            this.entidad = new Eventos()
             {
-                IdInventario = 1,
-                NombreElementoInterno = "Luces LED",
-                CantidadElementoInterno = 20,
-                PrecioElementoInterno = 45000m
+                IdEncargado = 1,
+                DetalleEvento = "Fiesta de Halloween",
+                FechaEvento = new DateTime(2026, 10, 31),
+                HoraInicio = new DateTime(2026, 10, 31, 20, 0, 0),
+                HoraFin = new DateTime(2026, 11, 1, 4, 0, 0)
             };
 
-            this.conexion.ElementosInternos!.Add(this.entidad!);
+            this.conexion.Eventos!.Add(this.entidad!);
             this.conexion.SaveChanges();
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.ElementosInternos!.ToList();
+            var lista = this.conexion.Eventos!.ToList();
             if (lista.Count <= 0)
                 throw new Exception("Lista vacía");
         }
 
         private void Actualizar()
         {
-            this.entidad!.NombreElementoInterno = "Luces LED RGB";
-            this.entidad!.CantidadElementoInterno = 18;
-            this.entidad!.PrecioElementoInterno = 50000m;
+            this.entidad!.DetalleEvento = "Fiesta de Halloween (VIP)";
+            this.entidad!.HoraFin = new DateTime(2026, 11, 1, 5, 0, 0);
 
-            var entry = this.conexion!.Entry<ElementosInternos>(this.entidad);
+            var entry = this.conexion!.Entry<Eventos>(this.entidad);
             entry.State = EntityState.Modified;
             this.conexion!.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.ElementosInternos!.Remove(this.entidad!);
+            this.conexion.Eventos!.Remove(this.entidad!);
             this.conexion.SaveChanges();
         }
     }
