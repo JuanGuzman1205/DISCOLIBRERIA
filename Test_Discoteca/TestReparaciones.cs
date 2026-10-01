@@ -32,13 +32,30 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
+            var empleado = this.conexion.Empleados!.FirstOrDefault();
+
+            if (empleado == null)
+            {
+                empleado = new Empleados()
+                {
+                    Nombre = "Andrés",
+                    Telefono = "3000000003",
+                    Cargo = "Encargado",
+                    Nomina = 180000000
+                };
+
+                this.conexion.Empleados!.Add(empleado);
+                this.conexion.SaveChanges();
+            }
+
             this.entidad = new Reparaciones()
             {
-                IdSolicitante = 1,
-                IdEncargado = 1,
+                IdSolicitante = empleado.IdEmpleado,
+                IdEncargado = empleado.IdEmpleado,
                 FechaReparacion = DateTime.Now
             };
-            this.conexion.Reparaciones!.Add(this.entidad!);
+
+            this.conexion.Reparaciones!.Add(this.entidad);
             this.conexion.SaveChanges();
         }
 

@@ -30,9 +30,26 @@ namespace Test_Discoteca
         }
         public void Insertar() 
         {
+            var empleado = this.conexion.Empleados!.FirstOrDefault();
+
+            if (empleado == null)
+            {
+                empleado = new Empleados()
+                {
+                    Nombre = "Gabriel",
+                    Telefono = "3000000000",
+                    Cargo = "Barra",
+                    Nomina = 180000000
+                };
+
+                this.conexion.Empleados!.Add(empleado);
+                this.conexion.SaveChanges();
+            }
+
+
             this.entidad = new Cajas()
             {
-                IdEmpleadoCaja = 1,
+                IdEmpleadoCaja = empleado.IdEmpleado,
                 DineroInicial = 500000,
                 DineroFinal = 0,
                 Ganancias = 0

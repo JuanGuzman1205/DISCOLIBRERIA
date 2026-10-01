@@ -32,13 +32,28 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
+            var cliente = this.conexion.Clientes!.FirstOrDefault();
+
+            if (cliente == null)
+            {
+                cliente = new Clientes()
+                {
+                    Nombre = "Juan",
+                    Apellido = "Guzman"
+                };
+
+                this.conexion.Clientes!.Add(cliente);
+                this.conexion.SaveChanges();
+            }
+
             this.entidad = new MetodosPagos()
             {
-                IdCliente = 1,
+                IdCliente = cliente.IdCliente,
                 TipoMetodoPago = "Efectivo",
                 NumeroCuenta = null
             };
-            this.conexion.MetodosPagos!.Add(this.entidad!);
+
+            this.conexion.MetodosPagos!.Add(this.entidad);
             this.conexion.SaveChanges();
         }
 

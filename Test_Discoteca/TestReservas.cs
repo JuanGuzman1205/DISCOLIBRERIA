@@ -32,13 +32,28 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
+            var cliente = this.conexion.Clientes!.FirstOrDefault();
+
+            if (cliente == null)
+            {
+                cliente = new Clientes()
+                {
+                    Nombre = "Juan",
+                    Apellido = "Morales"
+                };
+
+                this.conexion.Clientes!.Add(cliente);
+                this.conexion.SaveChanges();
+            }
+
             this.entidad = new Reservas()
             {
-                IdCliente = 1,
+                IdCliente = cliente.IdCliente,
                 FechaReserva = new DateTime(2026, 10, 3),
                 Total = 80000
             };
-            this.conexion.Reservas!.Add(this.entidad!);
+
+            this.conexion.Reservas!.Add(this.entidad);
             this.conexion.SaveChanges();
         }
 
