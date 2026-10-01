@@ -3,11 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Test_Discoteca
 {
@@ -15,12 +13,21 @@ namespace Test_Discoteca
     public class TestMovimientoInventarios
     {
         private IConexion conexion;
+        private IMovimientoInventariosAplicacion servicioMovimientoInventarios;
+        private IInventariosAplicacion servicioInventarios;
+
         private MovimientoInventarios? entidad = null;
+        private Inventarios? inventario = null;
+
         public TestMovimientoInventarios()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioMovimientoInventarios = new MovimientoInventariosAplicacion(this.conexion);
+            this.servicioInventarios = new InventariosAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -32,39 +39,44 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            this.entidad = new MovimientoInventarios()
-            {
-                IdInventario = 1,
-                TipoMovimiento = "Entrada",
-                Cantidad = 20,
-                FechaMovimiento = DateTime.Now
-            };
-            this.conexion.MovimientoInventarios!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.inventario = GeneradorDatosPrueba.ObtenerInventario();
+            this.inventario = this.servicioInventarios.Insertar(this.inventario);
+
+            this.entidad = GeneradorDatosPrueba.ObtenerMovimientoInventario(this.inventario.IdInventario);
+            this.entidad = this.servicioMovimientoInventarios.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.MovimientoInventarios!.ToList();
+            List<MovimientoInventarios> lista = this.servicioMovimientoInventarios.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("No se encontraron registros de movimientos en el inventario");
         }
 
         private void Actualizar()
         {
-            this.entidad!.Cantidad = 5;
-            this.entidad!.TipoMovimiento = "Salida";
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<MovimientoInventarios>(this.entidad);
+            this.entidad.Cantidad = 5;
+            this.entidad.TipoMovimiento = "Salida";
+
+            var entry = this.conexion.Entry<MovimientoInventarios>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.MovimientoInventarios!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
-        }
+            if (this.entidad != null)
+            {
+                this.servicioMovimientoInventarios.Borrar(this.entidad);
+            }
 
+            if (this.inventario != null)
+            {
+                this.servicioInventarios.Borrar(this.inventario);
+            }
+        }
     }
 }

@@ -3,10 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Test_Discoteca
 {
@@ -14,12 +13,19 @@ namespace Test_Discoteca
     public class TestCompras
     {
         private IConexion conexion;
+        private IEmpleadosAplicacion servicioEmpleados;
+        private IComprasAplicacion servicioCompras;
+
         private Compras? entidad = null;
+        private Empleados? empleado = null;
 
         public TestCompras()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioEmpleados = new EmpleadosAplicacion(this.conexion);
+            this.servicioCompras = new ComprasAplicacion(this.conexion);
         }
 
         [TestMethod]
@@ -33,53 +39,39 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            var empleado = this.conexion.Empleados!.FirstOrDefault();
+            this.empleado = GeneradorDatosPrueba.ObtenerEmpleado();
+            this.empleado = this.servicioEmpleados.Insertar(this.empleado);
 
-            if (empleado == null)
-            {
-                empleado = new Empleados()
-                {
-                    Nombre = "Braian",
-                    Telefono = "3000000001",
-                    Cargo = "Administrador",
-                    Nomina = 180000000
-                };
-
-                this.conexion.Empleados!.Add(empleado);
-                this.conexion.SaveChanges();
-            }
-
-            this.entidad = new Compras()
-            {
-                IdEmpleado = empleado.IdEmpleado,
-                Total = 550000,
-                Fecha = DateTime.Now
-            };
-
-            this.conexion.Compras!.Add(this.entidad);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerCompra(this.empleado.IdEmpleado);
+            this.entidad = this.servicioCompras.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.Compras!.ToList();
+            List<Compras> lista = this.servicioCompras.Consultar();
+
             if (lista.Count <= 0)
                 throw new Exception("Lista de compras vacía");
         }
 
         private void Actualizar()
         {
-            this.entidad!.Total = 600000;
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<Compras>(this.entidad);
+            this.entidad.Total = 600000;
+
+            var entry = this.conexion.Entry<Compras>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.Compras!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
+            if (this.empleado != null)
+            {
+                this.servicioEmpleados.Borrar(this.empleado);
+            }
         }
     }
 }

@@ -3,11 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Test_Discoteca
 {
@@ -15,12 +13,21 @@ namespace Test_Discoteca
     public class TestReparaciones
     {
         private IConexion conexion;
+        private IReparacionesAplicacion servicioReparaciones;
+        private IEmpleadosAplicacion servicioEmpleados;
+
         private Reparaciones? entidad = null;
+        private Empleados? empleado = null;
+
         public TestReparaciones()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioReparaciones = new ReparacionesAplicacion(this.conexion);
+            this.servicioEmpleados = new EmpleadosAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -32,54 +39,49 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            var empleado = this.conexion.Empleados!.FirstOrDefault();
-
-            if (empleado == null)
-            {
-                empleado = new Empleados()
-                {
-                    Nombre = "Andrés",
-                    Telefono = "3000000003",
-                    Cargo = "Encargado",
-                    Nomina = 180000000
-                };
-
-                this.conexion.Empleados!.Add(empleado);
-                this.conexion.SaveChanges();
-            }
+            this.empleado = GeneradorDatosPrueba.ObtenerEmpleado();
+            this.empleado = this.servicioEmpleados.Insertar(this.empleado);
 
             this.entidad = new Reparaciones()
             {
-                IdSolicitante = empleado.IdEmpleado,
-                IdEncargado = empleado.IdEmpleado,
+                IdSolicitante = this.empleado.IdEmpleado,
+                IdEncargado = this.empleado.IdEmpleado,
                 FechaReparacion = DateTime.Now
             };
 
-            this.conexion.Reparaciones!.Add(this.entidad);
-            this.conexion.SaveChanges();
+            this.entidad = this.servicioReparaciones.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.Reparaciones!.ToList();
+            List<Reparaciones> lista = this.servicioReparaciones.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("No hay reparaciones registradas");
         }
 
         private void Actualizar()
         {
-            this.entidad!.FechaReparacion = new DateTime(2026, 9, 23);
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<Reparaciones>(this.entidad);
+            this.entidad.FechaReparacion = new DateTime(2026, 9, 23);
+
+            var entry = this.conexion.Entry<Reparaciones>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.Reparaciones!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
-        }
+            if (this.entidad != null)
+            {
+                this.servicioReparaciones.Borrar(this.entidad);
+            }
 
+            if (this.empleado != null)
+            {
+                this.servicioEmpleados.Borrar(this.empleado);
+            }
+        }
     }
 }

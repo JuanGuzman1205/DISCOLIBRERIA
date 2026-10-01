@@ -11,7 +11,7 @@ namespace Inventario_Discoteca.Entidades
         [Key]
         public int IdVenta { get; set; }
         public int IdEmpleado { get; set; }
-        public int IdFactura { get; set; }
+        public int? IdFactura { get; set; }
         public decimal Total { get; set; }
         public bool Estado { get; set; } // True: Mesa abierta , False: Mesa cerrada.
 

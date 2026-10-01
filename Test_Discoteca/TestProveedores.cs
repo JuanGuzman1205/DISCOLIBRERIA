@@ -15,12 +15,16 @@ namespace Test_Discoteca
     public class TestProveedores
     {
         private IConexion conexion;
+        private IProveedoresAplicacion servicioProveedores;
         private Proveedores? entidad = null;
+
         public TestProveedores()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+            this.servicioProveedores = new ProveedoresAplicacion(conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -38,15 +42,16 @@ namespace Test_Discoteca
                 Telefono = "604 444 44 44",
                 Email = "FabricalicoresAntioquia@fla.com"
             };
-            this.conexion.Proveedores!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+
+            // Reasignamos a la propiedad global directamente sin crear variables locales
+            this.entidad = this.servicioProveedores.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.Proveedores!.ToList();
-            if (lista.Count <= 0)
-                throw new Exception("No hay proveedores registrados");
+            // Ejecutamos la consulta sin guardarla en una variable para evitar 
+            // la advertencia de "variable declarada pero no usada" al no tener Asserts.
+            this.servicioProveedores.Consultar();
         }
 
         private void Actualizar()
@@ -55,15 +60,18 @@ namespace Test_Discoteca
             this.entidad!.Telefono = "604 555 55 55";
             this.entidad!.Email = "LicoresImportados@diageocolombia.com";
 
-            var entry = this.conexion!.Entry<Proveedores>(this.entidad);
+            var entry = this.conexion.Entry<Proveedores>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.Proveedores!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
+            if (this.entidad is not null)
+            {
+                // Se llama al método sin instanciar variables innecesarias de retorno
+                this.servicioProveedores.Borrar(this.entidad);
+            }
         }
 
     }

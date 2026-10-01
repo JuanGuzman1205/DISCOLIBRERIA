@@ -3,11 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Test_Discoteca
 {
@@ -15,12 +13,17 @@ namespace Test_Discoteca
     public class TestMesas
     {
         private IConexion conexion;
+        private IMesasAplicacion servicioMesas;
         private Mesas? entidad = null;
+
         public TestMesas()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioMesas = new MesasAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -32,39 +35,37 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            this.entidad = new Mesas()
-            {
-                ConsumoMinimo = 121000,
-                Ubicacion = "Mesa Alta 1",
-                Capacidad = 4
-            };
-            this.conexion.Mesas!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerMesa();
+            this.entidad = this.servicioMesas.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.Mesas!.ToList();
+            List<Mesas> lista = this.servicioMesas.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("No se encontraron registros de mesas");
         }
 
         private void Actualizar()
         {
-            this.entidad!.ConsumoMinimo = 350000;
-            this.entidad!.Ubicacion = "VIP 1";
-            this.entidad!.Capacidad = 8;
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<Mesas>(this.entidad);
+            this.entidad.ConsumoMinimo = 350000;
+            this.entidad.Ubicacion = "VIP 1";
+            this.entidad.Capacidad = 8;
+
+            var entry = this.conexion.Entry<Mesas>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.Mesas!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
-        }
+            if (this.entidad == null)
+                throw new Exception("La entidad a borrar no existe.");
 
+            this.servicioMesas.Borrar(this.entidad);
+        }
     }
 }

@@ -3,10 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Test_Discoteca
 {
@@ -14,12 +13,19 @@ namespace Test_Discoteca
     public class TestElementosInternos
     {
         private IConexion conexion;
+        private IElementosInternosAplicacion servicioElementosInternos;
+        private IInventariosAplicacion servicioInventarios;
+
         private ElementosInternos? entidad = null;
+        private Inventarios? inventario = null;
 
         public TestElementosInternos()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioElementosInternos = new ElementosInternosAplicacion(this.conexion);
+            this.servicioInventarios = new InventariosAplicacion(this.conexion);
         }
 
         [TestMethod]
@@ -33,40 +39,40 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            this.entidad = new ElementosInternos()
-            {
-                IdInventario = 1,
-                NombreElementoInterno = "Luces LED",
-                CantidadElementoInterno = 20,
-                PrecioElementoInterno = 45000m
-            };
+            this.inventario = GeneradorDatosPrueba.ObtenerInventario();
+            this.inventario = this.servicioInventarios.Insertar(this.inventario);
 
-            this.conexion.ElementosInternos!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerElementoInterno(this.inventario.IdInventario);
+            this.entidad = this.servicioElementosInternos.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.ElementosInternos!.ToList();
+            List<ElementosInternos> lista = this.servicioElementosInternos.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("Lista vacía");
         }
 
         private void Actualizar()
         {
-            this.entidad!.NombreElementoInterno = "Luces LED RGB";
-            this.entidad!.CantidadElementoInterno = 18;
-            this.entidad!.PrecioElementoInterno = 50000m;
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<ElementosInternos>(this.entidad);
+            this.entidad.NombreElementoInterno = "Luces LED RGB";
+            this.entidad.CantidadElementoInterno = 18;
+            this.entidad.PrecioElementoInterno = 50000m;
+
+            var entry = this.conexion.Entry<ElementosInternos>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.ElementosInternos!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
+            if (this.inventario != null)
+            {
+                this.servicioInventarios.Borrar(this.inventario);
+            }
         }
     }
 }

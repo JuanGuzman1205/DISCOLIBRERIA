@@ -1,7 +1,9 @@
 CREATE DATABASE SistemaGestion;
-GO;
+GO
 USE SistemaGestion;
 GO
+
+
 CREATE TABLE Proveedores (
     IdProveedor INT IDENTITY(1,1) PRIMARY KEY,
     Nombre NVARCHAR(100) NOT NULL,
@@ -35,6 +37,9 @@ CREATE TABLE Mesas (
     Capacidad INT NOT NULL
 );
 
+CREATE TABLE Inventarios (
+    IdInventario INT IDENTITY(1,1) PRIMARY KEY
+);
 
 
 CREATE TABLE MetodosPagos (
@@ -42,7 +47,7 @@ CREATE TABLE MetodosPagos (
     IdCliente INT NULL,
     TipoMetodoPago NVARCHAR(50) NOT NULL,
     NumeroCuenta NVARCHAR(50) NULL,
-    CONSTRAINT FK_MetodosPagos_Clientes FOREIGN KEY (IdCliente) REFERENCES Clientes(IdCliente) ON DELETE SET NULL
+    CONSTRAINT FK_MetodosPagos_Clientes FOREIGN KEY (IdCliente) REFERENCES Clientes(IdCliente) ON DELETE CASCADE
 );
 
 CREATE TABLE Cajas (
@@ -51,7 +56,7 @@ CREATE TABLE Cajas (
     DineroInicial DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
     DineroFinal DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
     Ganancias DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT FK_Cajas_Empleados FOREIGN KEY (IdEmpleadoCaja) REFERENCES Empleados(IdEmpleado)
+    CONSTRAINT FK_Cajas_Empleados FOREIGN KEY (IdEmpleadoCaja) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE
 );
 
 CREATE TABLE Eventos (
@@ -61,7 +66,7 @@ CREATE TABLE Eventos (
     FechaEvento DATE NOT NULL,
     HoraInicio DATETIME NOT NULL,
     HoraFin DATETIME NOT NULL,
-    CONSTRAINT FK_Eventos_Empleados FOREIGN KEY (IdEncargado) REFERENCES Empleados(IdEmpleado)
+    CONSTRAINT FK_Eventos_Empleados FOREIGN KEY (IdEncargado) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE
 );
 
 CREATE TABLE OtrosGastos (
@@ -70,7 +75,7 @@ CREATE TABLE OtrosGastos (
     Descripcion NVARCHAR(255) NULL,
     Monto DECIMAL(12, 2) NOT NULL,
     FechaGasto DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_OtrosGastos_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado)
+    CONSTRAINT FK_OtrosGastos_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE
 );
 
 CREATE TABLE Compras (
@@ -78,7 +83,7 @@ CREATE TABLE Compras (
     IdEmpleado INT NOT NULL,
     Total DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
     Fecha DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_Compras_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado)
+    CONSTRAINT FK_Compras_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE
 );
 
 CREATE TABLE Reservas (
@@ -86,7 +91,7 @@ CREATE TABLE Reservas (
     IdCliente INT NOT NULL,
     FechaReserva DATETIME NOT NULL,
     Total DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT FK_Reservas_Clientes FOREIGN KEY (IdCliente) REFERENCES Clientes(IdCliente)
+    CONSTRAINT FK_Reservas_Clientes FOREIGN KEY (IdCliente) REFERENCES Clientes(IdCliente) ON DELETE CASCADE
 );
 
 CREATE TABLE Reparaciones (
@@ -94,16 +99,9 @@ CREATE TABLE Reparaciones (
     IdSolicitante INT NOT NULL,
     IdEncargado INT NOT NULL,
     FechaReparacion DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_Reparaciones_Solicitante FOREIGN KEY (IdSolicitante) REFERENCES Empleados(IdEmpleado),
-    CONSTRAINT FK_Reparaciones_Encargado FOREIGN KEY (IdEncargado) REFERENCES Empleados(IdEmpleado)
-);
-
-
-CREATE TABLE Inventarios (
-    IdInventario INT IDENTITY(1,1) PRIMARY KEY,
-    IdProducto INT NULL,
-    IdElementoInterno INT NULL,
-    Stock INT NOT NULL DEFAULT 0
+    -- Solo el Solicitante tiene CASCADE, el Encargado queda NO ACTION para evitar rutas múltiples
+    CONSTRAINT FK_Reparaciones_Solicitante FOREIGN KEY (IdSolicitante) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE,
+    CONSTRAINT FK_Reparaciones_Encargado FOREIGN KEY (IdEncargado) REFERENCES Empleados(IdEmpleado) ON DELETE NO ACTION
 );
 
 CREATE TABLE Productos (
@@ -115,13 +113,11 @@ CREATE TABLE Productos (
     Presentacion NVARCHAR(50) NULL,
     PrecioCompra DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
     PrecioVenta DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT FK_Productos_Categorias FOREIGN KEY (IdCategoria) REFERENCES CategoriaProductos(IdCategoria),
-    CONSTRAINT FK_Productos_Proveedores FOREIGN KEY (IdProveedor) REFERENCES Proveedores(IdProveedor),
-    CONSTRAINT FK_Productos_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario)
+    Stock INT NOT NULL DEFAULT 0,
+    CONSTRAINT FK_Productos_Categorias FOREIGN KEY (IdCategoria) REFERENCES CategoriaProductos(IdCategoria) ON DELETE CASCADE,
+    CONSTRAINT FK_Productos_Proveedores FOREIGN KEY (IdProveedor) REFERENCES Proveedores(IdProveedor) ON DELETE CASCADE,
+    CONSTRAINT FK_Productos_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario) ON DELETE CASCADE
 );
-
-ALTER TABLE Inventarios
-ADD CONSTRAINT FK_Inventarios_Productos FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto);
 
 CREATE TABLE ElementosInternos (
     IdElementoInterno INT IDENTITY(1,1) PRIMARY KEY,
@@ -129,11 +125,8 @@ CREATE TABLE ElementosInternos (
     NombreElementoInterno NVARCHAR(100) NOT NULL,
     CantidadElementoInterno INT NOT NULL DEFAULT 0,
     PrecioElementoInterno DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-    CONSTRAINT FK_ElementosInternos_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario)
+    CONSTRAINT FK_ElementosInternos_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario) ON DELETE CASCADE
 );
-
-ALTER TABLE Inventarios
-ADD CONSTRAINT FK_Inventarios_ElementosInternos FOREIGN KEY (IdElementoInterno) REFERENCES ElementosInternos(IdElementoInterno);
 
 CREATE TABLE MovimientoInventarios (
     IdMovimiento INT IDENTITY(1,1) PRIMARY KEY,
@@ -141,18 +134,16 @@ CREATE TABLE MovimientoInventarios (
     TipoMovimiento NVARCHAR(20) NOT NULL, -- Entrada / Salida
     Cantidad INT NOT NULL,
     FechaMovimiento DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_MovimientoInventarios_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario)
+    CONSTRAINT FK_MovimientoInventarios_Inventarios FOREIGN KEY (IdInventario) REFERENCES Inventarios(IdInventario) ON DELETE CASCADE
 );
-
-
 
 CREATE TABLE Ventas (
     IdVenta INT IDENTITY(1,1) PRIMARY KEY,
     IdEmpleado INT NOT NULL,
-    IdFactura INT NULL, -- Se actualiza cuando se emite la factura
+    IdFactura INT NULL, -- Se actualiza cuando se emite la factura (FK se asigna al final del script)
     Total DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
     Estado BIT NOT NULL DEFAULT 1, -- 1: Mesa abierta, 0: Mesa cerrada
-    CONSTRAINT FK_Ventas_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado)
+    CONSTRAINT FK_Ventas_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE
 );
 
 CREATE TABLE Facturas (
@@ -163,18 +154,13 @@ CREATE TABLE Facturas (
     IdCaja INT NOT NULL,
     IdMetodoPago INT NOT NULL,
     FechaFacturacion DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_Facturas_Ventas FOREIGN KEY (IdVenta) REFERENCES Ventas(IdVenta),
-    CONSTRAINT FK_Facturas_Mesero FOREIGN KEY (IdMesero) REFERENCES Empleados(IdEmpleado),
-    CONSTRAINT FK_Facturas_Barra FOREIGN KEY (IdBarra) REFERENCES Empleados(IdEmpleado),
-    CONSTRAINT FK_Facturas_Cajas FOREIGN KEY (IdCaja) REFERENCES Cajas(IdCaja),
-    CONSTRAINT FK_Facturas_MetodosPagos FOREIGN KEY (IdMetodoPago) REFERENCES MetodosPagos(IdMetodoPago)
+    -- Solo IdVenta tiene CASCADE. El resto es NO ACTION para evitar error 1750 (rutas múltiples de cascada)
+    CONSTRAINT FK_Facturas_Ventas FOREIGN KEY (IdVenta) REFERENCES Ventas(IdVenta) ON DELETE CASCADE,
+    CONSTRAINT FK_Facturas_Mesero FOREIGN KEY (IdMesero) REFERENCES Empleados(IdEmpleado) ON DELETE NO ACTION,
+    CONSTRAINT FK_Facturas_Barra FOREIGN KEY (IdBarra) REFERENCES Empleados(IdEmpleado) ON DELETE NO ACTION,
+    CONSTRAINT FK_Facturas_Cajas FOREIGN KEY (IdCaja) REFERENCES Cajas(IdCaja) ON DELETE NO ACTION,
+    CONSTRAINT FK_Facturas_MetodosPagos FOREIGN KEY (IdMetodoPago) REFERENCES MetodosPagos(IdMetodoPago) ON DELETE NO ACTION
 );
-
--- Asignación de la FK circular de Ventas hacia Facturas
-ALTER TABLE Ventas
-ADD CONSTRAINT FK_Ventas_Facturas FOREIGN KEY (IdFactura) REFERENCES Facturas(IdFactura);
-
-
 
 CREATE TABLE DetalleVentas (
     IdDetalleVenta INT IDENTITY(1,1) PRIMARY KEY,
@@ -183,7 +169,7 @@ CREATE TABLE DetalleVentas (
     Cantidad INT NOT NULL,
     PrecioUnitario DECIMAL(12, 2) NOT NULL,
     CONSTRAINT FK_DetalleVentas_Ventas FOREIGN KEY (IdVenta) REFERENCES Ventas(IdVenta) ON DELETE CASCADE,
-    CONSTRAINT FK_DetalleVentas_Productos FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto)
+    CONSTRAINT FK_DetalleVentas_Productos FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto) ON DELETE CASCADE
 );
 
 CREATE TABLE DetalleCompras (
@@ -193,7 +179,7 @@ CREATE TABLE DetalleCompras (
     Cantidad INT NOT NULL,
     Total DECIMAL(12, 2) NOT NULL,
     CONSTRAINT FK_DetalleCompras_Compras FOREIGN KEY (IdCompra) REFERENCES Compras(IdCompra) ON DELETE CASCADE,
-    CONSTRAINT FK_DetalleCompras_Productos FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto)
+    CONSTRAINT FK_DetalleCompras_Productos FOREIGN KEY (IdProducto) REFERENCES Productos(IdProducto) ON DELETE CASCADE
 );
 
 CREATE TABLE DetalleReservas (
@@ -201,7 +187,7 @@ CREATE TABLE DetalleReservas (
     IdReserva INT NOT NULL,
     IdMesa INT NOT NULL,
     CONSTRAINT FK_DetalleReservas_Reservas FOREIGN KEY (IdReserva) REFERENCES Reservas(IdReserva) ON DELETE CASCADE,
-    CONSTRAINT FK_DetalleReservas_Mesas FOREIGN KEY (IdMesa) REFERENCES Mesas(IdMesa)
+    CONSTRAINT FK_DetalleReservas_Mesas FOREIGN KEY (IdMesa) REFERENCES Mesas(IdMesa) ON DELETE CASCADE
 );
 
 CREATE TABLE DetalleReparaciones (
@@ -211,5 +197,13 @@ CREATE TABLE DetalleReparaciones (
     DescripcionReparacion NVARCHAR(255) NULL,
     CostoReparacion DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
     CONSTRAINT FK_DetalleReparaciones_Reparaciones FOREIGN KEY (IdReparacion) REFERENCES Reparaciones(IdReparacion) ON DELETE CASCADE,
-    CONSTRAINT FK_DetalleReparaciones_ElementosInternos FOREIGN KEY (IdElementoInterno) REFERENCES ElementosInternos(IdElementoInterno)
+    CONSTRAINT FK_DetalleReparaciones_ElementosInternos FOREIGN KEY (IdElementoInterno) REFERENCES ElementosInternos(IdElementoInterno) ON DELETE CASCADE
 );
+
+
+-- Asignación de la FK de Ventas hacia Facturas (NO ACTION para evitar conflictos de rutas con la FK de Facturas a Ventas)
+ALTER TABLE Ventas
+ADD CONSTRAINT FK_Ventas_Facturas FOREIGN KEY (IdFactura) REFERENCES Facturas(IdFactura) ON DELETE NO ACTION;
+
+ALTER TABLE Ventas 
+ALTER COLUMN IdFactura INT NULL;

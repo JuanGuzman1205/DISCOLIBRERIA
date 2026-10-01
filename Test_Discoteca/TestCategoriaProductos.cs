@@ -3,10 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Test_Discoteca
 {
@@ -14,14 +13,18 @@ namespace Test_Discoteca
     public class TestCategoriaProductos
     {
         private IConexion conexion;
+        private ICategoriaProductosAplicacion servicioCategoria;
         private CategoriaProductos? entidad = null;
+
         public TestCategoriaProductos()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
-        }
-        [TestMethod]
 
+            this.servicioCategoria = new CategoriaProductosAplicacion(this.conexion);
+        }
+
+        [TestMethod]
         public void Execute()
         {
             Insertar();
@@ -29,34 +32,39 @@ namespace Test_Discoteca
             Actualizar();
             Borrar();
         }
+
         public void Insertar()
         {
-            this.entidad = new CategoriaProductos()
-            {
-                NomCategoria = "Aguardientes"
-            };
-            this.conexion.CategoriaProductos!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerCategoriaProducto();
+            this.entidad = this.servicioCategoria.Insertar(this.entidad);
         }
+
         public void Consultar()
         {
-            var lista = this.conexion.CategoriaProductos!.ToList();
+            List<CategoriaProductos> lista = this.servicioCategoria.Consultar();
+
             if (lista.Count <= 0)
                 throw new Exception("Lista Vacia");
         }
+
         private void Actualizar()
         {
-            this.entidad!.NomCategoria = "Energizantes";
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
+
+            this.entidad.NomCategoria = "Energizantes";
 
             var entry = this.conexion.Entry<CategoriaProductos>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
+
         private void Borrar()
         {
-            this.conexion.CategoriaProductos!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
+            if (this.entidad == null)
+                throw new Exception("La entidad a borrar no existe.");
 
+            this.servicioCategoria.Borrar(this.entidad);
         }
     }
 }

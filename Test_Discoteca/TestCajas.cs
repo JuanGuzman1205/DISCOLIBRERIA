@@ -3,10 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Test_Discoteca
 {
@@ -14,12 +13,21 @@ namespace Test_Discoteca
     public class TestCajas
     {
         private IConexion conexion;
+        private IEmpleadosAplicacion servicioEmpleados;
+        private ICajasAplicacion servicioCajas;
+
         private Cajas? entidad = null;
-        public TestCajas() 
+        private Empleados? empleado = null;
+
+        public TestCajas()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioEmpleados = new EmpleadosAplicacion(this.conexion);
+            this.servicioCajas = new CajasAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -28,54 +36,43 @@ namespace Test_Discoteca
             Actualizar();
             Borrar();
         }
-        public void Insertar() 
+
+        public void Insertar()
         {
-            var empleado = this.conexion.Empleados!.FirstOrDefault();
+            this.empleado = GeneradorDatosPrueba.ObtenerEmpleado();
+            this.empleado = this.servicioEmpleados.Insertar(this.empleado);
 
-            if (empleado == null)
-            {
-                empleado = new Empleados()
-                {
-                    Nombre = "Gabriel",
-                    Telefono = "3000000000",
-                    Cargo = "Barra",
-                    Nomina = 180000000
-                };
-
-                this.conexion.Empleados!.Add(empleado);
-                this.conexion.SaveChanges();
-            }
-
-
-            this.entidad = new Cajas()
-            {
-                IdEmpleadoCaja = empleado.IdEmpleado,
-                DineroInicial = 500000,
-                DineroFinal = 0,
-                Ganancias = 0
-            };
-            this.conexion.Cajas!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerCaja(this.empleado.IdEmpleado);
+            this.entidad = this.servicioCajas.Insertar(this.entidad);
         }
-        public void Consultar() 
+
+        public void Consultar()
         {
-            var lista = this.conexion.Cajas!.ToList();
+            List<Cajas> lista = this.servicioCajas.Consultar();
+
             if (lista.Count <= 0)
                 throw new Exception("Lista Vacia");
         }
+
         private void Actualizar()
         {
-            this.entidad!.DineroFinal = 1100000;
-            this.entidad!.Ganancias = 600000;
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
+
+            this.entidad.DineroFinal = 1100000;
+            this.entidad.Ganancias = 600000;
 
             var entry = this.conexion.Entry<Cajas>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
-        }
-        private void Borrar()
-        { 
-            this.conexion.Cajas!.Remove(this.entidad!);
             this.conexion.SaveChanges();
+        }
+
+        private void Borrar()
+        {
+            if (this.empleado != null)
+            {
+                this.servicioEmpleados.Borrar(this.empleado);
+            }
         }
     }
 }

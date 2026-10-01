@@ -3,11 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Test_Discoteca
 {
@@ -15,12 +13,21 @@ namespace Test_Discoteca
     public class TestMetodosPagos
     {
         private IConexion conexion;
+        private IMetodosPagoAplicacion servicioMetodosPagos;
+        private IClientesAplicacion servicioClientes;
+
         private MetodosPagos? entidad = null;
+        private Clientes? cliente = null;
+
         public TestMetodosPagos()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioMetodosPagos = new MetodosPagosAplicacion(this.conexion);
+            this.servicioClientes = new ClientesAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -32,53 +39,44 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            var cliente = this.conexion.Clientes!.FirstOrDefault();
+            this.cliente = GeneradorDatosPrueba.ObtenerCliente();
+            this.cliente = this.servicioClientes.Insertar(this.cliente);
 
-            if (cliente == null)
-            {
-                cliente = new Clientes()
-                {
-                    Nombre = "Juan",
-                    Apellido = "Guzman"
-                };
-
-                this.conexion.Clientes!.Add(cliente);
-                this.conexion.SaveChanges();
-            }
-
-            this.entidad = new MetodosPagos()
-            {
-                IdCliente = cliente.IdCliente,
-                TipoMetodoPago = "Efectivo",
-                NumeroCuenta = null
-            };
-
-            this.conexion.MetodosPagos!.Add(this.entidad);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerMetodoPago(this.cliente.IdCliente);
+            this.entidad = this.servicioMetodosPagos.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.MetodosPagos!.ToList();
+            List<MetodosPagos> lista = this.servicioMetodosPagos.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("No se encontraron registros de métodos de pago");
         }
 
         private void Actualizar()
         {
-            this.entidad!.TipoMetodoPago = "Tarjeta de Crédito";
-            this.entidad!.NumeroCuenta = "987654321";
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<MetodosPagos>(this.entidad);
+            this.entidad.TipoMetodoPago = "Tarjeta de Crédito";
+            this.entidad.NumeroCuenta = "987654321";
+
+            var entry = this.conexion.Entry<MetodosPagos>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.MetodosPagos!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
-        }
+            if (this.entidad != null)
+            {
+                this.servicioMetodosPagos.Borrar(this.entidad);
+            }
 
+            if (this.cliente != null)
+            {
+                this.servicioClientes.Borrar(this.cliente);
+            }
+        }
     }
 }

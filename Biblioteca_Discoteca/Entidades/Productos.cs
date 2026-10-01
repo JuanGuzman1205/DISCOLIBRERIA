@@ -17,6 +17,7 @@ namespace Inventario_Discoteca.Entidades
         public string? Presentacion { get; set; }
         public decimal PrecioCompra { get; set; }
         public decimal PrecioVenta { get; set; }
+        public int stock { get; set; }
 
         [ForeignKey("IdProveedor")]
         public Proveedores? _Proveedor { get; set; }

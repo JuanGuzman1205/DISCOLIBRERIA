@@ -3,11 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Test_Discoteca
 {
@@ -15,12 +13,21 @@ namespace Test_Discoteca
     public class TestOtrosGastos
     {
         private IConexion conexion;
+        private IOtrosGastosAplicacion servicioOtrosGastos;
+        private IEmpleadosAplicacion servicioEmpleados;
+
         private OtrosGastos? entidad = null;
+        private Empleados? empleado = null;
+
         public TestOtrosGastos()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioOtrosGastos = new OtrosGastosAplicacion(this.conexion);
+            this.servicioEmpleados = new EmpleadosAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -32,56 +39,39 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            var empleado = this.conexion.Empleados!.FirstOrDefault();
+            this.empleado = GeneradorDatosPrueba.ObtenerEmpleado();
+            this.empleado = this.servicioEmpleados.Insertar(this.empleado);
 
-            if (empleado == null)
-            {
-                empleado = new Empleados()
-                {
-                    Nombre = "Luis",
-                    Telefono = "3000000002",
-                    Cargo = "Administrador",
-                    Nomina = 180000000
-                };
-
-                this.conexion.Empleados!.Add(empleado);
-                this.conexion.SaveChanges();
-            }
-
-            this.entidad = new OtrosGastos()
-            {
-                IdEmpleado = empleado.IdEmpleado,
-                Descripcion = "Copa de vidrio",
-                Monto = 10000,
-                FechaGasto = DateTime.Now
-            };
-
-            this.conexion.OtrosGastos!.Add(this.entidad);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerOtroGasto(this.empleado.IdEmpleado);
+            this.entidad = this.servicioOtrosGastos.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.OtrosGastos!.ToList();
+            List<OtrosGastos> lista = this.servicioOtrosGastos.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("No hay gastos registrados");
         }
 
         private void Actualizar()
         {
-            this.entidad!.Descripcion = "Ajuste de Precio de la copa de vidrio";
-            this.entidad!.Monto = 15000;
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<OtrosGastos>(this.entidad);
+            this.entidad.Descripcion = "Ajuste de Precio de la copa de vidrio";
+            this.entidad.Monto = 15000;
+
+            var entry = this.conexion.Entry<OtrosGastos>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.OtrosGastos!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
+            if (this.empleado != null)
+            {
+                this.servicioEmpleados.Borrar(this.empleado);
+            }
         }
-
     }
 }

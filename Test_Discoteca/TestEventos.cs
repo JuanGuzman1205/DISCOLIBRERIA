@@ -3,10 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Test_Discoteca
 {
@@ -14,12 +13,19 @@ namespace Test_Discoteca
     public class TestEventos
     {
         private IConexion conexion;
+        private IEventosAplicacion servicioEventos;
+        private IEmpleadosAplicacion servicioEmpleados;
+
         private Eventos? entidad = null;
+        private Empleados? empleado = null;
 
         public TestEventos()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioEventos = new EventosAplicacion(this.conexion);
+            this.servicioEmpleados = new EmpleadosAplicacion(this.conexion);
         }
 
         [TestMethod]
@@ -33,40 +39,39 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            this.entidad = new Eventos()
-            {
-                IdEncargado = 1,
-                DetalleEvento = "Fiesta de Halloween",
-                FechaEvento = new DateTime(2026, 10, 31),
-                HoraInicio = new DateTime(2026, 10, 31, 20, 0, 0),
-                HoraFin = new DateTime(2026, 11, 1, 4, 0, 0)
-            };
+            this.empleado = GeneradorDatosPrueba.ObtenerEmpleado();
+            this.empleado = this.servicioEmpleados.Insertar(this.empleado);
 
-            this.conexion.Eventos!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerEvento(this.empleado.IdEmpleado);
+            this.entidad = this.servicioEventos.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.Eventos!.ToList();
+            List<Eventos> lista = this.servicioEventos.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("Lista vacía");
         }
 
         private void Actualizar()
         {
-            this.entidad!.DetalleEvento = "Fiesta de Halloween (VIP)";
-            this.entidad!.HoraFin = new DateTime(2026, 11, 1, 5, 0, 0);
+            if (this.entidad == null)
+                throw new Exception("La entidad a actualizar no existe.");
 
-            var entry = this.conexion!.Entry<Eventos>(this.entidad);
+            this.entidad.DetalleEvento = "Fiesta de Halloween (VIP)";
+            this.entidad.HoraFin = new DateTime(2026, 11, 1, 5, 0, 0);
+
+            var entry = this.conexion.Entry<Eventos>(this.entidad);
             entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            this.conexion.SaveChanges();
         }
 
         private void Borrar()
         {
-            this.conexion.Eventos!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
+            if (this.empleado != null)
+            {
+                this.servicioEmpleados.Borrar(this.empleado);
+            }
         }
     }
 }

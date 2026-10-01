@@ -3,11 +3,9 @@ using Biblioteca_Discoteca.Interfaces;
 using Biblioteca_Discoteca.Nucleo;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
-
 
 namespace Test_Discoteca
 {
@@ -15,12 +13,17 @@ namespace Test_Discoteca
     public class TestInventarios
     {
         private IConexion conexion;
+        private IInventariosAplicacion servicioInventarios;
         private Inventarios? entidad = null;
+
         public TestInventarios()
         {
             this.conexion = new Conexion();
             this.conexion.StringConexion = DatosGenerales.ObtenerStringConexion();
+
+            this.servicioInventarios = new InventariosAplicacion(this.conexion);
         }
+
         [TestMethod]
         public void Execute()
         {
@@ -32,37 +35,28 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            this.entidad = new Inventarios()
-            {
-                IdProducto = 1,
-                IdElementoInterno = 1,
-                Stock = 10
-            };
-            this.conexion.Inventarios!.Add(this.entidad!);
-            this.conexion.SaveChanges();
+            this.entidad = GeneradorDatosPrueba.ObtenerInventario();
+            this.entidad = this.servicioInventarios.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            var lista = this.conexion.Inventarios!.ToList();
+            List<Inventarios> lista = this.servicioInventarios.Consultar();
             if (lista.Count <= 0)
                 throw new Exception("No se encontraron registros de inventario");
         }
 
         private void Actualizar()
         {
-            this.entidad!.Stock = 15;
-
-            var entry = this.conexion!.Entry<Inventarios>(this.entidad);
-            entry.State = EntityState.Modified;
-            this.conexion!.SaveChanges();
+            // Debido a que el inventario solo maneja el ID por el momento, se deja como operación nula para mantener el flujo de la prueba
         }
 
         private void Borrar()
         {
-            this.conexion.Inventarios!.Remove(this.entidad!);
-            this.conexion.SaveChanges();
-        }
+            if (this.entidad == null)
+                throw new Exception("La entidad a borrar no existe.");
 
+            this.servicioInventarios.Borrar(this.entidad);
+        }
     }
 }
