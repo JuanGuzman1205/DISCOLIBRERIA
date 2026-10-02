@@ -58,7 +58,7 @@ namespace Test_Discoteca
 
         public static Inventarios ObtenerInventario()
         {
-            return new Inventarios(); // La tabla solo tiene Id autoincremental
+            return new Inventarios(); 
         }
 
         public static MetodosPagos ObtenerMetodoPago(int? idCliente = null)

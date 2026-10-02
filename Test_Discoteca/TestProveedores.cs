@@ -43,14 +43,13 @@ namespace Test_Discoteca
                 Email = "FabricalicoresAntioquia@fla.com"
             };
 
-            // Reasignamos a la propiedad global directamente sin crear variables locales
+            
             this.entidad = this.servicioProveedores.Insertar(this.entidad);
         }
 
         public void Consultar()
         {
-            // Ejecutamos la consulta sin guardarla en una variable para evitar 
-            // la advertencia de "variable declarada pero no usada" al no tener Asserts.
+            
             this.servicioProveedores.Consultar();
         }
 
@@ -69,7 +68,7 @@ namespace Test_Discoteca
         {
             if (this.entidad is not null)
             {
-                // Se llama al método sin instanciar variables innecesarias de retorno
+               
                 this.servicioProveedores.Borrar(this.entidad);
             }
         }

@@ -57,7 +57,7 @@ namespace Test_Discoteca
 
         public void Insertar()
         {
-            // 1. Crear dependencias para el Producto
+            
             this.categoria = GeneradorDatosPrueba.ObtenerCategoriaProducto();
             this.categoria = this.servicioCategorias.Insertar(this.categoria);
 
@@ -67,19 +67,19 @@ namespace Test_Discoteca
             this.inventario = GeneradorDatosPrueba.ObtenerInventario();
             this.inventario = this.servicioInventarios.Insertar(this.inventario);
 
-            // Insertar Producto con sus IDs
+            
             this.producto = GeneradorDatosPrueba.ObtenerProducto(this.categoria.IdCategoria, this.proveedor.IdProveedor, this.inventario.IdInventario);
             this.producto = this.servicioProductos.Insertar(this.producto);
 
-            // 2. Crear dependencias para la Compra
+           
             this.empleado = GeneradorDatosPrueba.ObtenerEmpleado();
             this.empleado = this.servicioEmpleados.Insertar(this.empleado);
 
-            // Insertar Compra con su ID
+            
             this.compra = GeneradorDatosPrueba.ObtenerCompra(this.empleado.IdEmpleado);
             this.compra = this.servicioCompras.Insertar(this.compra);
 
-            // 3. Crear DetalleCompra
+            
             this.entidad = GeneradorDatosPrueba.ObtenerDetalleCompra(this.compra.IdCompra, this.producto.IdProducto);
             this.entidad = this.servicioDetalleCompras.Insertar(this.entidad);
         }

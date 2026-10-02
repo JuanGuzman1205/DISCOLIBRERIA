@@ -24,7 +24,8 @@ namespace Test_Discoteca
         private Empleados? empleadoVentas = null;
         private Empleados? empleadoMesero = null;
         private Empleados? empleadoBarra = null;
-        private Empleados? empleadoCaja = null;
+        private Empleados? empleadoResponsableCaja = null;
+        private Cajas? caja = null;
         private Clientes? cliente = null;
         private MetodosPagos? metodoPago = null;
 
@@ -60,34 +61,41 @@ namespace Test_Discoteca
             this.empleadoBarra = GeneradorDatosPrueba.ObtenerEmpleado();
             this.empleadoBarra = this.servicioEmpleados.Insertar(this.empleadoBarra);
 
-            this.empleadoCaja = GeneradorDatosPrueba.ObtenerEmpleado();
-            this.empleadoCaja = this.servicioEmpleados.Insertar(this.empleadoCaja);
+            this.empleadoResponsableCaja = GeneradorDatosPrueba.ObtenerEmpleado();
+            this.empleadoResponsableCaja = this.servicioEmpleados.Insertar(this.empleadoResponsableCaja);
+
+            this.caja = new Cajas()
+            {
+                IdEmpleadoCaja = this.empleadoResponsableCaja!.IdEmpleado
+            };
+            this.conexion.Cajas!.Add(this.caja);
+            this.conexion.SaveChanges();
 
             this.cliente = GeneradorDatosPrueba.ObtenerCliente();
             this.cliente = this.servicioClientes.Insertar(this.cliente);
 
-            this.metodoPago = GeneradorDatosPrueba.ObtenerMetodoPago(this.cliente.IdCliente);
+            this.metodoPago = GeneradorDatosPrueba.ObtenerMetodoPago(this.cliente!.IdCliente);
             this.metodoPago = this.servicioMetodosPagos.Insertar(this.metodoPago);
 
             this.entidad = new Ventas()
             {
-                IdEmpleado = this.empleadoVentas.IdEmpleado,
-                IdFactura = 0,
+                IdEmpleado = this.empleadoVentas!.IdEmpleado,
+                IdFactura = null,
                 Total = 150700,
                 Estado = true
             };
             this.entidad = this.servicioVentas.Insertar(this.entidad);
 
             this.factura = GeneradorDatosPrueba.ObtenerFactura(
-                this.entidad.IdVenta,
-                this.empleadoMesero.IdEmpleado,
-                this.empleadoBarra.IdEmpleado,
-                this.empleadoCaja.IdEmpleado,
-                this.metodoPago.IdMetodoPago
+                this.entidad!.IdVenta,
+                this.empleadoMesero!.IdEmpleado,
+                this.empleadoBarra!.IdEmpleado,
+                this.caja!.IdCaja,
+                this.metodoPago!.IdMetodoPago
             );
             this.factura = this.servicioFacturas.Insertar(this.factura);
 
-            this.entidad.IdFactura = this.factura.IdFactura;
+            this.entidad!.IdFactura = this.factura!.IdFactura;
             var entry = this.conexion.Entry<Ventas>(this.entidad);
             entry.State = EntityState.Modified;
             this.conexion.SaveChanges();
@@ -114,45 +122,21 @@ namespace Test_Discoteca
 
         private void Borrar()
         {
-            if (this.entidad != null)
+            if (this.entidad != null) this.servicioVentas.Borrar(this.entidad);
+            if (this.factura != null) this.servicioFacturas.Borrar(this.factura);
+            if (this.metodoPago != null) this.servicioMetodosPagos.Borrar(this.metodoPago);
+            if (this.cliente != null) this.servicioClientes.Borrar(this.cliente);
+
+            if (this.caja != null)
             {
-                this.servicioVentas.Borrar(this.entidad);
+                this.conexion.Cajas!.Remove(this.caja);
+                this.conexion.SaveChanges();
             }
 
-            if (this.factura != null)
-            {
-                this.servicioFacturas.Borrar(this.factura);
-            }
-
-            if (this.metodoPago != null)
-            {
-                this.servicioMetodosPagos.Borrar(this.metodoPago);
-            }
-
-            if (this.cliente != null)
-            {
-                this.servicioClientes.Borrar(this.cliente);
-            }
-
-            if (this.empleadoCaja != null)
-            {
-                this.servicioEmpleados.Borrar(this.empleadoCaja);
-            }
-
-            if (this.empleadoBarra != null)
-            {
-                this.servicioEmpleados.Borrar(this.empleadoBarra);
-            }
-
-            if (this.empleadoMesero != null)
-            {
-                this.servicioEmpleados.Borrar(this.empleadoMesero);
-            }
-
-            if (this.empleadoVentas != null)
-            {
-                this.servicioEmpleados.Borrar(this.empleadoVentas);
-            }
+            if (this.empleadoResponsableCaja != null) this.servicioEmpleados.Borrar(this.empleadoResponsableCaja);
+            if (this.empleadoBarra != null) this.servicioEmpleados.Borrar(this.empleadoBarra);
+            if (this.empleadoMesero != null) this.servicioEmpleados.Borrar(this.empleadoMesero);
+            if (this.empleadoVentas != null) this.servicioEmpleados.Borrar(this.empleadoVentas);
         }
     }
 }
