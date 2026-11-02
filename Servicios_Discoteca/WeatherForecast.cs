@@ -1,4 +1,4 @@
-namespace Servicios_Discotecas
+namespace Servicios_Discoteca
 {
     public class WeatherForecast
     {

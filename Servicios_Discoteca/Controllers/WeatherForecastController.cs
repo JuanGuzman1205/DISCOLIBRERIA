@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Servicios_Discotecas.Controllers
+namespace Servicios_Discoteca.Controllers
 {
     [ApiController]
     [Route("[controller]")]
