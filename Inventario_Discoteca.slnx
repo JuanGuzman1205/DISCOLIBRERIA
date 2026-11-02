@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="Biblioteca_Discoteca/Biblioteca_Discoteca.csproj" />
   <Project Path="Consola_Discoteca/Consola_Discoteca.csproj" />
+  <Project Path="Presentaciones_Discoteca/Presentaciones_Discoteca.csproj" Id="79f9f31b-ad23-4d5d-9306-2d002cffe8f7" />
+  <Project Path="Servicios_Discotecas/Servicios_Discotecas.csproj" Id="750387fb-161c-41fa-9258-1b6b16ae612e" />
   <Project Path="Test_Discoteca/Test_Discoteca.csproj" />
 </Solution>
