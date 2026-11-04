@@ -78,7 +78,7 @@ namespace Presentaciones_Discoteca.Implementaciones
         private bool Validar(CategoriaProductos entidad)
         {
             // Retorna true si falta la información requerida
-            return string.IsNullOrWhiteSpace(entidad.NomCategoria);
+            return string.IsNullOrEmpty(entidad.NomCategoria);
         }
     }
 }

@@ -14,5 +14,5 @@ namespace Inventario_Discoteca.Entidades
         public string? Email { get; set; }
 
         public List<Productos>? _Productos { get; set; }
-    }
+    }   
 }
