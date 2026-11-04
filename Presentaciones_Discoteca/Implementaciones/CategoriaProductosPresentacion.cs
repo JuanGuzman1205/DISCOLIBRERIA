@@ -8,7 +8,7 @@ namespace Presentaciones_Discoteca.Implementaciones
 {
     public class CategoriaProductosPresentacion : ICategoriaProductosPresentacion
     {
-        private readonly IComunicaciones IComunicaciones;
+        private  IComunicaciones IComunicaciones;
 
         public CategoriaProductosPresentacion(IComunicaciones IComunicaciones)
         {
