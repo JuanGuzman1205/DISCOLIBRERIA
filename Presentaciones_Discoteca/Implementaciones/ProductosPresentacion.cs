@@ -17,7 +17,7 @@ namespace Presentaciones_Discoteca.Implementaciones
 
         public Productos Actualizar(Productos entidad)
         {
-            if (entidad.IdProveedor == 0)
+            if (entidad.IdProducto == 0)
                 throw new Exception("No se ha guardado");
 
             if (Validar(entidad))
@@ -32,7 +32,7 @@ namespace Presentaciones_Discoteca.Implementaciones
 
         public Productos Borrar(Productos entidad)
         {
-            if (entidad.IdProveedor == 0)
+            if (entidad.IdProducto == 0)
                 throw new Exception("No se ha guardado");
 
             var task = this.IComunicaciones.Ejecutar<Productos>(
@@ -62,7 +62,7 @@ namespace Presentaciones_Discoteca.Implementaciones
 
         public Productos Insertar(Productos entidad)
         {
-            if (entidad.IdProveedor != 0)
+            if (entidad.IdProducto != 0)
                 throw new Exception("Ya se guardó");
 
             if (Validar(entidad))
