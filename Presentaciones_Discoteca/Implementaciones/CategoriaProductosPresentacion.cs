@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Presentaciones_Discoteca.Implementaciones
 {
-    public class CategoriaProductosPresentacion : ICategoriaProductosPresentacion
+    public class CategoriaProductosPresentacion : IEmpleadosPresentacion
     {
         private  IComunicaciones IComunicaciones;
 
