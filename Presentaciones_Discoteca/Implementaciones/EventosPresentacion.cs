@@ -1,0 +1,74 @@
+﻿using Inventario_Discoteca.Entidades;
+using Presentaciones_Discoteca.Interfaces;
+
+namespace Presentaciones_Discoteca.Implementaciones
+{
+    public class EventosPresentacion : IEventosPresentacion
+    {
+        private IComunicaciones IComunicaciones;
+
+        public EventosPresentacion(IComunicaciones IComunicaciones)
+        {
+            this.IComunicaciones = IComunicaciones;
+        }
+
+        public Eventos Insertar(Eventos entidad)
+        {
+            if (entidad.IdEvento != 0)
+                throw new Exception("Ya se guardó");
+
+            if (Validar(entidad))
+                throw new Exception("Falta información");
+
+            var task = this.IComunicaciones.Ejecutar<Eventos>("Eventos/Insertar", entidad);
+            task.Wait();
+            return task.Result;
+        }
+
+        public Eventos Actualizar(Eventos entidad)
+        {
+            if (entidad.IdEvento == 0)
+                throw new Exception("No se ha guardado");
+
+            if (Validar(entidad))
+                throw new Exception("Falta información");
+
+            var task = this.IComunicaciones.Ejecutar<Eventos>("Eventos/Actualizar", entidad);
+            task.Wait();
+            return task.Result;
+        }
+
+        public Eventos Borrar(Eventos entidad)
+        {
+            if (entidad.IdEvento == 0)
+                throw new Exception("No se ha guardado");
+
+            var task = this.IComunicaciones.Ejecutar<Eventos>("Eventos/Borrar", entidad);
+            task.Wait();
+            return task.Result;
+        }
+
+        public List<Eventos> Consultar()
+        {
+            var task = this.IComunicaciones.Ejecutar<List<Eventos>>("Eventos/Consultar", new Eventos());
+            task.Wait();
+            return task.Result;
+        }
+
+        public List<Eventos> Buscar(Eventos entidad)
+        {
+            var task = this.IComunicaciones.Ejecutar<List<Eventos>>("Eventos/Buscar", entidad);
+            task.Wait();
+            return task.Result;
+        }
+
+        private bool Validar(Eventos entidad)
+        {
+            // Retorna true si falta la información requerida
+            return entidad.IdEncargado == 0 ||
+                   string.IsNullOrEmpty(entidad.DetalleEvento) ||
+                   entidad.FechaEvento == default(DateTime) ||
+                   entidad.HoraFin <= entidad.HoraInicio;
+        }
+    }
+}

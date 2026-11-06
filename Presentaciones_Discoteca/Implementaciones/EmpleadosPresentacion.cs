@@ -55,7 +55,7 @@ namespace Presentaciones_Discoteca.Implementaciones
         {
             var task = this.IComunicaciones.Ejecutar<List<Empleados>>(
                 "Empleados/Consultar",
-                new Empleados);
+                new Empleados());
             task.Wait();
             return task.Result;
         }
