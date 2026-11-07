@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public OtrosGastos Insertar(OtrosGastos entidad)
+        public async Task<OtrosGastos> Insertar(OtrosGastos entidad)
         {
             if (entidad.IdGasto != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<OtrosGastos>("OtrosGastos/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<OtrosGastos>("OtrosGastos/Insertar", entidad);
         }
 
-        public OtrosGastos Actualizar(OtrosGastos entidad)
+        public async Task<OtrosGastos> Actualizar(OtrosGastos entidad)
         {
             if (entidad.IdGasto == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<OtrosGastos>("OtrosGastos/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<OtrosGastos>("OtrosGastos/Actualizar", entidad);
         }
 
-        public OtrosGastos Borrar(OtrosGastos entidad)
+        public async Task<OtrosGastos> Borrar(OtrosGastos entidad)
         {
             if (entidad.IdGasto == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<OtrosGastos>("OtrosGastos/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<OtrosGastos>("OtrosGastos/Borrar", entidad);
         }
 
-        public List<OtrosGastos> Consultar()
+        public async Task<List<OtrosGastos>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<OtrosGastos>>("OtrosGastos/Consultar", new OtrosGastos());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<OtrosGastos>>("OtrosGastos/Consultar", new OtrosGastos());
         }
 
-        public List<OtrosGastos> Buscar(OtrosGastos entidad)
+        public async Task<List<OtrosGastos>> Buscar(OtrosGastos entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<OtrosGastos>>("OtrosGastos/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<OtrosGastos>>("OtrosGastos/Buscar", entidad);
         }
 
         private bool Validar(OtrosGastos entidad)

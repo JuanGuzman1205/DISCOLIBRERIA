@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Cajas Insertar(Cajas entidad)
+        public async Task<Cajas> Insertar(Cajas entidad)
         {
             if (entidad.IdCaja != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Cajas>("Cajas/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Cajas>("Cajas/Insertar", entidad);
         }
 
-        public Cajas Actualizar(Cajas entidad)
+        public async Task<Cajas> Actualizar(Cajas entidad)
         {
             if (entidad.IdCaja == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Cajas>("Cajas/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Cajas>("Cajas/Actualizar", entidad);
         }
 
-        public Cajas Borrar(Cajas entidad)
+        public async Task<Cajas> Borrar(Cajas entidad)
         {
             if (entidad.IdCaja == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Cajas>("Cajas/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Cajas>("Cajas/Borrar", entidad);
         }
 
-        public List<Cajas> Consultar()
+        public async Task<List<Cajas>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Cajas>>("Cajas/Consultar", new Cajas());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Cajas>>("Cajas/Consultar", new Cajas());
         }
 
-        public List<Cajas> Buscar(Cajas entidad)
+        public async Task<List<Cajas>> Buscar(Cajas entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Cajas>>("Cajas/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Cajas>>("Cajas/Buscar", entidad);
         }
 
         private bool Validar(Cajas entidad)

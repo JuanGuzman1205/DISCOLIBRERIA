@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public DetalleCompras Insertar(DetalleCompras entidad)
+        public async Task<DetalleCompras> Insertar(DetalleCompras entidad)
         {
             if (entidad.IdDetalleCompra != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<DetalleCompras>("DetalleCompras/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<DetalleCompras>("DetalleCompras/Insertar", entidad);
         }
 
-        public DetalleCompras Actualizar(DetalleCompras entidad)
+        public async Task<DetalleCompras> Actualizar(DetalleCompras entidad)
         {
             if (entidad.IdDetalleCompra == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<DetalleCompras>("DetalleCompras/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<DetalleCompras>("DetalleCompras/Actualizar", entidad);
         }
 
-        public DetalleCompras Borrar(DetalleCompras entidad)
+        public async Task<DetalleCompras> Borrar(DetalleCompras entidad)
         {
             if (entidad.IdDetalleCompra == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<DetalleCompras>("DetalleCompras/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<DetalleCompras>("DetalleCompras/Borrar", entidad);
         }
 
-        public List<DetalleCompras> Consultar()
+        public async Task<List<DetalleCompras>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<DetalleCompras>>("DetalleCompras/Consultar", new DetalleCompras());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<DetalleCompras>>("DetalleCompras/Consultar", new DetalleCompras());
         }
 
-        public List<DetalleCompras> Buscar(DetalleCompras entidad)
+        public async Task<List<DetalleCompras>> Buscar(DetalleCompras entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<DetalleCompras>>("DetalleCompras/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<DetalleCompras>>("DetalleCompras/Buscar", entidad);
         }
 
         private bool Validar(DetalleCompras entidad)

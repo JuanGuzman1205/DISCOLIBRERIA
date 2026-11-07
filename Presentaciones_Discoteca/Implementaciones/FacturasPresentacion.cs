@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Facturas Insertar(Facturas entidad)
+        public async Task<Facturas> Insertar(Facturas entidad)
         {
             if (entidad.IdFactura != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Facturas>("Facturas/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Facturas>("Facturas/Insertar", entidad);
         }
 
-        public Facturas Actualizar(Facturas entidad)
+        public async Task<Facturas> Actualizar(Facturas entidad)
         {
             if (entidad.IdFactura == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Facturas>("Facturas/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Facturas>("Facturas/Actualizar", entidad);
         }
 
-        public Facturas Borrar(Facturas entidad)
+        public async Task<Facturas> Borrar(Facturas entidad)
         {
             if (entidad.IdFactura == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Facturas>("Facturas/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Facturas>("Facturas/Borrar", entidad);
         }
 
-        public List<Facturas> Consultar()
+        public async Task<List<Facturas>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Facturas>>("Facturas/Consultar", new Facturas());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Facturas>>("Facturas/Consultar", new Facturas());
         }
 
-        public List<Facturas> Buscar(Facturas entidad)
+        public async Task<List<Facturas>> Buscar(Facturas entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Facturas>>("Facturas/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Facturas>>("Facturas/Buscar", entidad);
         }
 
         private bool Validar(Facturas entidad)

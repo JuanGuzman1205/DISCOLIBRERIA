@@ -3,6 +3,7 @@ using Presentaciones_Discoteca.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Implementaciones
 {
@@ -15,7 +16,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Proveedores Actualizar(Proveedores entidad)
+        public async Task<Proveedores> Actualizar(Proveedores entidad)
         {
             if (entidad.IdProveedor == 0)
                 throw new Exception("No se ha guardado");
@@ -23,44 +24,36 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Proveedores>(
+            return await this.IComunicaciones.Ejecutar<Proveedores>(
                 "Proveedores/Actualizar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public Proveedores Borrar(Proveedores entidad)
+        public async Task<Proveedores> Borrar(Proveedores entidad)
         {
             if (entidad.IdProveedor == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Proveedores>(
+            return await this.IComunicaciones.Ejecutar<Proveedores>(
                 "Proveedores/Borrar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public List<Proveedores> Buscar(Proveedores entidad)
+        public async Task<List<Proveedores>> Buscar(Proveedores entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Proveedores>>(
+            return await this.IComunicaciones.Ejecutar<List<Proveedores>>(
                 "Proveedores/Buscar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public List<Proveedores> Consultar()
+        public async Task<List<Proveedores>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Proveedores>>(
+            return await this.IComunicaciones.Ejecutar<List<Proveedores>>(
                 "Proveedores/Consultar",
                 null);
-            task.Wait();
-            return task.Result;
         }
 
-        public Proveedores Insertar(Proveedores entidad)
+        public async Task<Proveedores> Insertar(Proveedores entidad)
         {
             if (entidad.IdProveedor != 0)
                 throw new Exception("Ya se guardó");
@@ -68,11 +61,9 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Proveedores>(
+            return await this.IComunicaciones.Ejecutar<Proveedores>(
                 "Proveedores/Insertar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
         private bool Validar(Proveedores entidad)

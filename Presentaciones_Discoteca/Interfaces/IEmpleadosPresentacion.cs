@@ -2,15 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IEmpleadosPresentacion
     {
-        Empleados Insertar(Empleados entidad);
-        Empleados Actualizar(Empleados entidad);
-        List<Empleados> Consultar();
-        List<Empleados> Buscar(Empleados entidad);
-        Empleados Borrar(Empleados entidad);
+        Task<Empleados> Insertar(Empleados entidad);
+        Task<Empleados> Actualizar(Empleados entidad);
+        Task<List<Empleados>> Consultar();
+        Task<List<Empleados>> Buscar(Empleados entidad);
+        Task<Empleados> Borrar(Empleados entidad);
     }
 }

@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Reparaciones Insertar(Reparaciones entidad)
+        public async Task<Reparaciones> Insertar(Reparaciones entidad)
         {
             if (entidad.IdReparacion != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Reparaciones>("Reparaciones/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Reparaciones>("Reparaciones/Insertar", entidad);
         }
 
-        public Reparaciones Actualizar(Reparaciones entidad)
+        public async Task<Reparaciones> Actualizar(Reparaciones entidad)
         {
             if (entidad.IdReparacion == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Reparaciones>("Reparaciones/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Reparaciones>("Reparaciones/Actualizar", entidad);
         }
 
-        public Reparaciones Borrar(Reparaciones entidad)
+        public async Task<Reparaciones> Borrar(Reparaciones entidad)
         {
             if (entidad.IdReparacion == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Reparaciones>("Reparaciones/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Reparaciones>("Reparaciones/Borrar", entidad);
         }
 
-        public List<Reparaciones> Consultar()
+        public async Task<List<Reparaciones>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Reparaciones>>("Reparaciones/Consultar", new Reparaciones());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Reparaciones>>("Reparaciones/Consultar", new Reparaciones());
         }
 
-        public List<Reparaciones> Buscar(Reparaciones entidad)
+        public async Task<List<Reparaciones>> Buscar(Reparaciones entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Reparaciones>>("Reparaciones/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Reparaciones>>("Reparaciones/Buscar", entidad);
         }
 
         private bool Validar(Reparaciones entidad)

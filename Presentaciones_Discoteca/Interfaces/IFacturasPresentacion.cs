@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IFacturasPresentacion
     {
-        Facturas Insertar(Facturas entidad);
-        Facturas Actualizar(Facturas entidad);
-        List<Facturas> Consultar();
-        List<Facturas> Buscar(Facturas entidad);
-        Facturas Borrar(Facturas entidad);
+        Task<Facturas> Insertar(Facturas entidad);
+        Task<Facturas> Actualizar(Facturas entidad);
+        Task<List<Facturas>> Consultar();
+        Task<List<Facturas>> Buscar(Facturas entidad);
+        Task<Facturas> Borrar(Facturas entidad);
     }
 }

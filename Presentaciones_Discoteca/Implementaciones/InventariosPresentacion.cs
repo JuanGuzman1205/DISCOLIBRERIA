@@ -12,48 +12,38 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Inventarios Insertar(Inventarios entidad)
+        public async Task<Inventarios> Insertar(Inventarios entidad)
         {
             if (entidad.IdInventario != 0)
                 throw new Exception("Ya se guardó");
 
-            var task = this.IComunicaciones.Ejecutar<Inventarios>("Inventarios/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Inventarios>("Inventarios/Insertar", entidad);
         }
 
-        public Inventarios Actualizar(Inventarios entidad)
+        public async Task<Inventarios> Actualizar(Inventarios entidad)
         {
             if (entidad.IdInventario == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Inventarios>("Inventarios/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Inventarios>("Inventarios/Actualizar", entidad);
         }
 
-        public Inventarios Borrar(Inventarios entidad)
+        public async Task<Inventarios> Borrar(Inventarios entidad)
         {
             if (entidad.IdInventario == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Inventarios>("Inventarios/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Inventarios>("Inventarios/Borrar", entidad);
         }
 
-        public List<Inventarios> Consultar()
+        public async Task<List<Inventarios>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Inventarios>>("Inventarios/Consultar", new Inventarios());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Inventarios>>("Inventarios/Consultar", new Inventarios());
         }
 
-        public List<Inventarios> Buscar(Inventarios entidad)
+        public async Task<List<Inventarios>> Buscar(Inventarios entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Inventarios>>("Inventarios/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Inventarios>>("Inventarios/Buscar", entidad);
         }
 
         // Inventarios no tiene método Validar porque la entidad solo tiene su llave

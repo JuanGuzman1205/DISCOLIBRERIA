@@ -2,16 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Interfaces
 {
     public interface ICategoriaProductosPresentacion
     {
-        CategoriaProductos Insertar(CategoriaProductos entidad);
-        CategoriaProductos Actualizar(CategoriaProductos entidad);
-        List<CategoriaProductos> Consultar();
-        List<CategoriaProductos> Buscar(CategoriaProductos entidad);
-        CategoriaProductos Borrar(CategoriaProductos entidad);
+        Task<CategoriaProductos> Insertar(CategoriaProductos entidad);
+        Task<CategoriaProductos> Actualizar(CategoriaProductos entidad);
+        Task<List<CategoriaProductos>> Consultar();
+        Task<List<CategoriaProductos>> Buscar(CategoriaProductos entidad);
+        Task<CategoriaProductos> Borrar(CategoriaProductos entidad);
 
     }
 }

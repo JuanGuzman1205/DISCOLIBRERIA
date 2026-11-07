@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public DetalleReservas Insertar(DetalleReservas entidad)
+        public async Task<DetalleReservas> Insertar(DetalleReservas entidad)
         {
             if (entidad.IdDetalleReserva != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<DetalleReservas>("DetalleReservas/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<DetalleReservas>("DetalleReservas/Insertar", entidad);
         }
 
-        public DetalleReservas Actualizar(DetalleReservas entidad)
+        public async Task<DetalleReservas> Actualizar(DetalleReservas entidad)
         {
             if (entidad.IdDetalleReserva == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<DetalleReservas>("DetalleReservas/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<DetalleReservas>("DetalleReservas/Actualizar", entidad);
         }
 
-        public DetalleReservas Borrar(DetalleReservas entidad)
+        public async Task<DetalleReservas> Borrar(DetalleReservas entidad)
         {
             if (entidad.IdDetalleReserva == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<DetalleReservas>("DetalleReservas/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<DetalleReservas>("DetalleReservas/Borrar", entidad);
         }
 
-        public List<DetalleReservas> Consultar()
+        public async Task<List<DetalleReservas>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<DetalleReservas>>("DetalleReservas/Consultar", new DetalleReservas());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<DetalleReservas>>("DetalleReservas/Consultar", new DetalleReservas());
         }
 
-        public List<DetalleReservas> Buscar(DetalleReservas entidad)
+        public async Task<List<DetalleReservas>> Buscar(DetalleReservas entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<DetalleReservas>>("DetalleReservas/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<DetalleReservas>>("DetalleReservas/Buscar", entidad);
         }
 
         private bool Validar(DetalleReservas entidad)

@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IEventosPresentacion
     {
-        Eventos Insertar(Eventos entidad);
-        Eventos Actualizar(Eventos entidad);
-        List<Eventos> Consultar();
-        List<Eventos> Buscar(Eventos entidad);
-        Eventos Borrar(Eventos entidad);
+        Task<Eventos> Insertar(Eventos entidad);
+        Task<Eventos> Actualizar(Eventos entidad);
+        Task<List<Eventos>> Consultar();
+        Task<List<Eventos>> Buscar(Eventos entidad);
+        Task<Eventos> Borrar(Eventos entidad);
     }
 }

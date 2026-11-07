@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public MovimientoInventarios Insertar(MovimientoInventarios entidad)
+        public async Task<MovimientoInventarios> Insertar(MovimientoInventarios entidad)
         {
             if (entidad.IdMovimiento != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<MovimientoInventarios>("MovimientoInventarios/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<MovimientoInventarios>("MovimientoInventarios/Insertar", entidad);
         }
 
-        public MovimientoInventarios Actualizar(MovimientoInventarios entidad)
+        public async Task<MovimientoInventarios> Actualizar(MovimientoInventarios entidad)
         {
             if (entidad.IdMovimiento == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<MovimientoInventarios>("MovimientoInventarios/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<MovimientoInventarios>("MovimientoInventarios/Actualizar", entidad);
         }
 
-        public MovimientoInventarios Borrar(MovimientoInventarios entidad)
+        public async Task<MovimientoInventarios> Borrar(MovimientoInventarios entidad)
         {
             if (entidad.IdMovimiento == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<MovimientoInventarios>("MovimientoInventarios/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<MovimientoInventarios>("MovimientoInventarios/Borrar", entidad);
         }
 
-        public List<MovimientoInventarios> Consultar()
+        public async Task<List<MovimientoInventarios>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<MovimientoInventarios>>("MovimientoInventarios/Consultar", new MovimientoInventarios());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<MovimientoInventarios>>("MovimientoInventarios/Consultar", new MovimientoInventarios());
         }
 
-        public List<MovimientoInventarios> Buscar(MovimientoInventarios entidad)
+        public async Task<List<MovimientoInventarios>> Buscar(MovimientoInventarios entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<MovimientoInventarios>>("MovimientoInventarios/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<MovimientoInventarios>>("MovimientoInventarios/Buscar", entidad);
         }
 
         private bool Validar(MovimientoInventarios entidad)

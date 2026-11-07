@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IDetalleVentasPresentacion
     {
-        DetalleVentas Insertar(DetalleVentas entidad);
-        DetalleVentas Actualizar(DetalleVentas entidad);
-        List<DetalleVentas> Consultar();
-        List<DetalleVentas> Buscar(DetalleVentas entidad);
-        DetalleVentas Borrar(DetalleVentas entidad);
+        Task<DetalleVentas> Insertar(DetalleVentas entidad);
+        Task<DetalleVentas> Actualizar(DetalleVentas entidad);
+        Task<List<DetalleVentas>> Consultar();
+        Task<List<DetalleVentas>> Buscar(DetalleVentas entidad);
+        Task<DetalleVentas> Borrar(DetalleVentas entidad);
     }
 }

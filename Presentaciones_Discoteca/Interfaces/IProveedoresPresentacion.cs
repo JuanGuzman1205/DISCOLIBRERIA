@@ -2,16 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IProveedoresPresentacion
     {
-        Proveedores Insertar(Proveedores entidad);
-        Proveedores Actualizar(Proveedores entidad);
-        List<Proveedores> Consultar();
-        List<Proveedores> Buscar(Proveedores entidad);
-        Proveedores Borrar(Proveedores entidad);
+        Task<Proveedores> Insertar(Proveedores entidad);
+        Task<Proveedores> Actualizar(Proveedores entidad);
+        Task<List<Proveedores>> Consultar();
+        Task<List<Proveedores>> Buscar(Proveedores entidad);
+        Task<Proveedores> Borrar(Proveedores entidad);
 
     }
 }

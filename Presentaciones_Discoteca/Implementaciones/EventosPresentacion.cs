@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Eventos Insertar(Eventos entidad)
+        public async Task<Eventos> Insertar(Eventos entidad)
         {
             if (entidad.IdEvento != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Eventos>("Eventos/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Eventos>("Eventos/Insertar", entidad);
         }
 
-        public Eventos Actualizar(Eventos entidad)
+        public async Task<Eventos> Actualizar(Eventos entidad)
         {
             if (entidad.IdEvento == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Eventos>("Eventos/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Eventos>("Eventos/Actualizar", entidad);
         }
 
-        public Eventos Borrar(Eventos entidad)
+        public async Task<Eventos> Borrar(Eventos entidad)
         {
             if (entidad.IdEvento == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Eventos>("Eventos/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Eventos>("Eventos/Borrar", entidad);
         }
 
-        public List<Eventos> Consultar()
+        public async Task<List<Eventos>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Eventos>>("Eventos/Consultar", new Eventos());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Eventos>>("Eventos/Consultar", new Eventos());
         }
 
-        public List<Eventos> Buscar(Eventos entidad)
+        public async Task<List<Eventos>> Buscar(Eventos entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Eventos>>("Eventos/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Eventos>>("Eventos/Buscar", entidad);
         }
 
         private bool Validar(Eventos entidad)

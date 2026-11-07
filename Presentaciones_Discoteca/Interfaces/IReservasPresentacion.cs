@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IReservasPresentacion
     {
-        Reservas Insertar(Reservas entidad);
-        Reservas Actualizar(Reservas entidad);
-        List<Reservas> Consultar();
-        List<Reservas> Buscar(Reservas entidad);
-        Reservas Borrar(Reservas entidad);
+        Task<Reservas> Insertar(Reservas entidad);
+        Task<Reservas> Actualizar(Reservas entidad);
+        Task<List<Reservas>> Consultar();
+        Task<List<Reservas>> Buscar(Reservas entidad);
+        Task<Reservas> Borrar(Reservas entidad);
     }
 }

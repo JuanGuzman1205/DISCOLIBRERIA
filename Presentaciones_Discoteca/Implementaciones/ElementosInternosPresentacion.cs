@@ -4,6 +4,7 @@ using Presentaciones_Discoteca.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Implementaciones
 {
@@ -16,7 +17,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public ElementosInternos Actualizar(ElementosInternos entidad)
+        public async Task<ElementosInternos> Actualizar(ElementosInternos entidad)
         {
             if (entidad.IdElementoInterno == 0)
                 throw new Exception("No se ha guardado");
@@ -24,44 +25,36 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<ElementosInternos>(
+            return await this.IComunicaciones.Ejecutar<ElementosInternos>(
                 "ElementosInternos/Actualizar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public ElementosInternos Borrar(ElementosInternos entidad)
+        public async Task<ElementosInternos> Borrar(ElementosInternos entidad)
         {
             if (entidad.IdElementoInterno == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<ElementosInternos>(
+            return await this.IComunicaciones.Ejecutar<ElementosInternos>(
                 "ElementosInternos/Borrar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public List<ElementosInternos> Buscar(ElementosInternos entidad)
+        public async Task<List<ElementosInternos>> Buscar(ElementosInternos entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<ElementosInternos>>(
+            return await this.IComunicaciones.Ejecutar<List<ElementosInternos>>(
                 "ElementosInternos/Buscar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public List<ElementosInternos> Consultar()
+        public async Task<List<ElementosInternos>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<ElementosInternos>>(
+            return await this.IComunicaciones.Ejecutar<List<ElementosInternos>>(
                 "ElementosInternos/Consultar",
                 null);
-            task.Wait();
-            return task.Result;
         }
 
-        public ElementosInternos Insertar(ElementosInternos entidad)
+        public async Task<ElementosInternos> Insertar(ElementosInternos entidad)
         {
             if (entidad.IdElementoInterno != 0)
                 throw new Exception("Ya se guardó");
@@ -69,11 +62,9 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<ElementosInternos>(
+            return await this.IComunicaciones.Ejecutar<ElementosInternos>(
                 "ElementosInternos/Insertar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
         private bool Validar(ElementosInternos entidad)

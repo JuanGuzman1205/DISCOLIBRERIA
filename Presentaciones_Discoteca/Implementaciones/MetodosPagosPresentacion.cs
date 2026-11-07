@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public MetodosPagos Insertar(MetodosPagos entidad)
+        public async Task<MetodosPagos> Insertar(MetodosPagos entidad)
         {
             if (entidad.IdMetodoPago != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<MetodosPagos>("MetodosPagos/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<MetodosPagos>("MetodosPagos/Insertar", entidad);
         }
 
-        public MetodosPagos Actualizar(MetodosPagos entidad)
+        public async Task<MetodosPagos> Actualizar(MetodosPagos entidad)
         {
             if (entidad.IdMetodoPago == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<MetodosPagos>("MetodosPagos/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<MetodosPagos>("MetodosPagos/Actualizar", entidad);
         }
 
-        public MetodosPagos Borrar(MetodosPagos entidad)
+        public async Task<MetodosPagos> Borrar(MetodosPagos entidad)
         {
             if (entidad.IdMetodoPago == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<MetodosPagos>("MetodosPagos/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<MetodosPagos>("MetodosPagos/Borrar", entidad);
         }
 
-        public List<MetodosPagos> Consultar()
+        public async Task<List<MetodosPagos>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<MetodosPagos>>("MetodosPagos/Consultar", new MetodosPagos());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<MetodosPagos>>("MetodosPagos/Consultar", new MetodosPagos());
         }
 
-        public List<MetodosPagos> Buscar(MetodosPagos entidad)
+        public async Task<List<MetodosPagos>> Buscar(MetodosPagos entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<MetodosPagos>>("MetodosPagos/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<MetodosPagos>>("MetodosPagos/Buscar", entidad);
         }
 
         private bool Validar(MetodosPagos entidad)

@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IMetodosPagosPresentacion
     {
-        MetodosPagos Insertar(MetodosPagos entidad);
-        MetodosPagos Actualizar(MetodosPagos entidad);
-        List<MetodosPagos> Consultar();
-        List<MetodosPagos> Buscar(MetodosPagos entidad);
-        MetodosPagos Borrar(MetodosPagos entidad);
+        Task<MetodosPagos> Insertar(MetodosPagos entidad);
+        Task<MetodosPagos> Actualizar(MetodosPagos entidad);
+        Task<List<MetodosPagos>> Consultar();
+        Task<List<MetodosPagos>> Buscar(MetodosPagos entidad);
+        Task<MetodosPagos> Borrar(MetodosPagos entidad);
     }
 }

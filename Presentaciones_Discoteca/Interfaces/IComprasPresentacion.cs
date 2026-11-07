@@ -2,16 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IComprasPresentacion
     {
-        Compras Insertar(Compras entidad);
-        Compras Actualizar(Compras entidad);
-        List<Compras> Consultar();
-        List<Compras> Buscar(Compras entidad);
-        Compras Borrar(Compras entidad);
+        Task<Compras> Insertar(Compras entidad);
+        Task<Compras> Actualizar(Compras entidad);
+        Task<List<Compras>> Consultar();
+        Task<List<Compras>> Buscar(Compras entidad);
+        Task<Compras> Borrar(Compras entidad);
 
     }
 }

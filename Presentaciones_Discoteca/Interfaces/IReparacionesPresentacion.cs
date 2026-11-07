@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IReparacionesPresentacion
     {
-        Reparaciones Insertar(Reparaciones entidad);
-        Reparaciones Actualizar(Reparaciones entidad);
-        List<Reparaciones> Consultar();
-        List<Reparaciones> Buscar(Reparaciones entidad);
-        Reparaciones Borrar(Reparaciones entidad);
+        Task<Reparaciones> Insertar(Reparaciones entidad);
+        Task<Reparaciones> Actualizar(Reparaciones entidad);
+        Task<List<Reparaciones>> Consultar();
+        Task<List<Reparaciones>> Buscar(Reparaciones entidad);
+        Task<Reparaciones> Borrar(Reparaciones entidad);
     }
 }

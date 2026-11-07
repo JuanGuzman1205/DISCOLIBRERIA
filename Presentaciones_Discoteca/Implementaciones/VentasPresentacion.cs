@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Ventas Insertar(Ventas entidad)
+        public async Task<Ventas> Insertar(Ventas entidad)
         {
             if (entidad.IdVenta != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Ventas>("Ventas/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Ventas>("Ventas/Insertar", entidad);
         }
 
-        public Ventas Actualizar(Ventas entidad)
+        public async Task<Ventas> Actualizar(Ventas entidad)
         {
             if (entidad.IdVenta == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Ventas>("Ventas/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Ventas>("Ventas/Actualizar", entidad);
         }
 
-        public Ventas Borrar(Ventas entidad)
+        public async Task<Ventas> Borrar(Ventas entidad)
         {
             if (entidad.IdVenta == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Ventas>("Ventas/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Ventas>("Ventas/Borrar", entidad);
         }
 
-        public List<Ventas> Consultar()
+        public async Task<List<Ventas>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Ventas>>("Ventas/Consultar", new Ventas());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Ventas>>("Ventas/Consultar", new Ventas());
         }
 
-        public List<Ventas> Buscar(Ventas entidad)
+        public async Task<List<Ventas>> Buscar(Ventas entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Ventas>>("Ventas/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Ventas>>("Ventas/Buscar", entidad);
         }
 
         private bool Validar(Ventas entidad)

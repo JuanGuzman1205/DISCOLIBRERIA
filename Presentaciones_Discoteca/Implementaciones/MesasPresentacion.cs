@@ -12,7 +12,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Mesas Insertar(Mesas entidad)
+        public async Task<Mesas> Insertar(Mesas entidad)
         {
             if (entidad.IdMesa != 0)
                 throw new Exception("Ya se guardó");
@@ -20,12 +20,10 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Mesas>("Mesas/Insertar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Mesas>("Mesas/Insertar", entidad);
         }
 
-        public Mesas Actualizar(Mesas entidad)
+        public async Task<Mesas> Actualizar(Mesas entidad)
         {
             if (entidad.IdMesa == 0)
                 throw new Exception("No se ha guardado");
@@ -33,33 +31,25 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Mesas>("Mesas/Actualizar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Mesas>("Mesas/Actualizar", entidad);
         }
 
-        public Mesas Borrar(Mesas entidad)
+        public async Task<Mesas> Borrar(Mesas entidad)
         {
             if (entidad.IdMesa == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Mesas>("Mesas/Borrar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<Mesas>("Mesas/Borrar", entidad);
         }
 
-        public List<Mesas> Consultar()
+        public async Task<List<Mesas>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Mesas>>("Mesas/Consultar", new Mesas());
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Mesas>>("Mesas/Consultar", new Mesas());
         }
 
-        public List<Mesas> Buscar(Mesas entidad)
+        public async Task<List<Mesas>> Buscar(Mesas entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Mesas>>("Mesas/Buscar", entidad);
-            task.Wait();
-            return task.Result;
+            return await this.IComunicaciones.Ejecutar<List<Mesas>>("Mesas/Buscar", entidad);
         }
 
         private bool Validar(Mesas entidad)

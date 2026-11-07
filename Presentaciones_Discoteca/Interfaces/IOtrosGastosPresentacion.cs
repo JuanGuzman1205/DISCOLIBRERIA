@@ -4,10 +4,10 @@ namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IOtrosGastosPresentacion
     {
-        OtrosGastos Insertar(OtrosGastos entidad);
-        OtrosGastos Actualizar(OtrosGastos entidad);
-        List<OtrosGastos> Consultar();
-        List<OtrosGastos> Buscar(OtrosGastos entidad);
-        OtrosGastos Borrar(OtrosGastos entidad);
+        Task<OtrosGastos> Insertar(OtrosGastos entidad);
+        Task<OtrosGastos> Actualizar(OtrosGastos entidad);
+        Task<List<OtrosGastos>> Consultar();
+        Task<List<OtrosGastos>> Buscar(OtrosGastos entidad);
+        Task<OtrosGastos> Borrar(OtrosGastos entidad);
     }
 }

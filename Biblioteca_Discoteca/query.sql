@@ -207,3 +207,17 @@ ADD CONSTRAINT FK_Ventas_Facturas FOREIGN KEY (IdFactura) REFERENCES Facturas(Id
 
 ALTER TABLE Ventas 
 ALTER COLUMN IdFactura INT NULL;
+CREATE TABLE Usuarios (
+    IdUsuario INT IDENTITY(1,1) PRIMARY KEY,
+    IdEmpleado INT NOT NULL UNIQUE, -- Al ser UNIQUE, un empleado solo puede tener 1 usuario (o ninguno si no se registra aquí)
+    NombreUsuario NVARCHAR(50) NOT NULL UNIQUE,
+    Contrasena NVARCHAR(255) NOT NULL, 
+    Rol NVARCHAR(20) NOT NULL,
+    Estado BIT NOT NULL DEFAULT 1, 
+    FechaCreacion DATETIME NOT NULL DEFAULT GETDATE(),
+    
+    CONSTRAINT FK_Usuarios_Empleados FOREIGN KEY (IdEmpleado) REFERENCES Empleados(IdEmpleado) ON DELETE CASCADE,
+    
+    -- Restricción que obliga a que el valor solo pueda ser 'Manager' o 'Empleado'
+    CONSTRAINT CHK_Usuarios_Rol CHECK (Rol IN ('Manager', 'Empleado'))
+);

@@ -2,16 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Interfaces
 {
     public interface IClientesPresentacion
     {
-        Clientes Insertar(Clientes entidad);
-        Clientes Actualizar(Clientes entidad);
-        List<Clientes> Consultar();
-        List<Clientes> Buscar(Clientes entidad);
-        Clientes Borrar(Clientes entidad);
+        Task<Clientes> Insertar(Clientes entidad);
+        Task<Clientes> Actualizar(Clientes entidad);
+        Task<List<Clientes>> Consultar();
+        Task<List<Clientes>> Buscar(Clientes entidad);
+        Task<Clientes> Borrar(Clientes entidad);
 
     }
 }

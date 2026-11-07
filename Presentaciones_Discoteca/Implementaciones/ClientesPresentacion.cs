@@ -3,6 +3,7 @@ using Presentaciones_Discoteca.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Presentaciones_Discoteca.Implementaciones
 {
@@ -15,7 +16,7 @@ namespace Presentaciones_Discoteca.Implementaciones
             this.IComunicaciones = IComunicaciones;
         }
 
-        public Clientes Actualizar(Clientes entidad)
+        public async Task<Clientes> Actualizar(Clientes entidad)
         {
             if (entidad.IdCliente == 0)
                 throw new Exception("No se ha guardado");
@@ -23,44 +24,36 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Clientes>(
+            return await this.IComunicaciones.Ejecutar<Clientes>(
                 "Clientes/Actualizar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public Clientes Borrar(Clientes entidad)
+        public async Task<Clientes> Borrar(Clientes entidad)
         {
             if (entidad.IdCliente == 0)
                 throw new Exception("No se ha guardado");
 
-            var task = this.IComunicaciones.Ejecutar<Clientes>(
+            return await this.IComunicaciones.Ejecutar<Clientes>(
                 "Clientes/Borrar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public List<Clientes> Buscar(Clientes entidad)
+        public async Task<List<Clientes>> Buscar(Clientes entidad)
         {
-            var task = this.IComunicaciones.Ejecutar<List<Clientes>>(
+            return await this.IComunicaciones.Ejecutar<List<Clientes>>(
                 "Clientes/Buscar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
-        public List<Clientes> Consultar()
+        public async Task<List<Clientes>> Consultar()
         {
-            var task = this.IComunicaciones.Ejecutar<List<Clientes>>(
+            return await this.IComunicaciones.Ejecutar<List<Clientes>>(
                 "Clientes/Consultar",
                 new Clientes());
-            task.Wait();
-            return task.Result;
         }
 
-        public Clientes Insertar(Clientes entidad)
+        public async Task<Clientes> Insertar(Clientes entidad)
         {
             if (entidad.IdCliente != 0)
                 throw new Exception("Ya se guardó");
@@ -68,11 +61,9 @@ namespace Presentaciones_Discoteca.Implementaciones
             if (Validar(entidad))
                 throw new Exception("Falta información");
 
-            var task = this.IComunicaciones.Ejecutar<Clientes>(
+            return await this.IComunicaciones.Ejecutar<Clientes>(
                 "Clientes/Insertar",
                 entidad);
-            task.Wait();
-            return task.Result;
         }
 
         private bool Validar(Clientes entidad)
