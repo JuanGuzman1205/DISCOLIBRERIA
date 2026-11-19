@@ -5,11 +5,19 @@ using Presentaciones_Discoteca.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración de Blazor y Razor Pages en .NET 10
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddRazorPages(); // <-- 1. REGISTRAR SERVICIO DE RAZOR PAGES
+builder.Services.AddRazorPages();
+
+// Configuracion de sesión
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 // Inyección de dependencias
 builder.Services.AddScoped<IComunicaciones, Comunicaciones>();
@@ -35,6 +43,7 @@ builder.Services.AddScoped<IReparacionesPresentacion, ReparacionesPresentacion>(
 builder.Services.AddScoped<IDetalleReparacionesPresentacion, DetalleReparacionesPresentacion>();
 builder.Services.AddScoped<IReservasPresentacion, ReservasPresentacion>();
 builder.Services.AddScoped<IDetalleReservasPresentacion, DetalleReservasPresentacion>();
+builder.Services.AddScoped<IUsuariosPresentacion, UsuariosPresentacion>();
 
 var app = builder.Build();
 
@@ -44,12 +53,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+
 app.UseHttpsRedirection();
+
+app.UseSession();
+
 app.UseAntiforgery();
 app.MapStaticAssets();
 
-app.MapRazorPages(); // <-- 2. MAPEAR RUTAS DE RAZOR PAGES
+app.MapRazorPages();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
