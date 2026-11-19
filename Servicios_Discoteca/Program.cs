@@ -27,6 +27,7 @@ builder.Services.AddScoped<IDetalleReparacionesAplicacion, DetalleReparacionesAp
 builder.Services.AddScoped<IEventosAplicacion, EventosAplicacion>();
 builder.Services.AddScoped<IOtrosGastosAplicacion, OtrosGastosAplicacion>();
 builder.Services.AddScoped<IInventariosAplicacion, InventariosAplicacion>();
+builder.Services.AddScoped<IUsuariosAplicacion, UsuariosAplicacion>();
 
 var app = builder.Build();
 

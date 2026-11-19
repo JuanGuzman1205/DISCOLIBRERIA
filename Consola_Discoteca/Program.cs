@@ -28,6 +28,7 @@ try
     Console.WriteLine($"Reparaciones: {conexion.Reparaciones!.ToList().Count}");
     Console.WriteLine($"Reservas: {conexion.Reservas!.ToList().Count}");
     Console.WriteLine($"Ventas: {conexion.Ventas!.ToList().Count}");
+    Console.WriteLine($"Usuarios: {conexion.Usuarios!.ToList().Count}");
 }
 catch (Exception ex)
 {

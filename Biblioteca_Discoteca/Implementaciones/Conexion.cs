@@ -1,4 +1,5 @@
-﻿using Biblioteca_Discoteca.Interfaces;
+﻿using Biblioteca_Discoteca.Entidades;
+using Biblioteca_Discoteca.Interfaces;
 using Inventario_Discoteca.Entidades;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -39,5 +40,6 @@ namespace Biblioteca_Discoteca.Implementaciones
         public DbSet<Reparaciones>? Reparaciones { get; set; }
         public DbSet<Reservas>? Reservas { get; set; }
         public DbSet<Ventas>? Ventas { get; set; }
+        public DbSet<Usuarios>? Usuarios { get; set; }
     }
 }

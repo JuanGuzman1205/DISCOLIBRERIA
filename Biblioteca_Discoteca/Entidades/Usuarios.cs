@@ -7,16 +7,15 @@ using System.Text;
 
 namespace Biblioteca_Discoteca.Entidades
 {
-    public class Users
+    public class Usuarios
     {
-        public class Usuario
-        {
+        
             [Key]
             public int IdUsuario { get; set; }
 
             [Required]
             public int IdEmpleado { get; set; }
-
+            
             [Required]
             [StringLength(50)]
             public string NombreUsuario { get; set; } = null!;
@@ -33,9 +32,8 @@ namespace Biblioteca_Discoteca.Entidades
 
             public DateTime FechaCreacion { get; set; } = DateTime.Now;
 
-            // Propiedad de navegación hacia Empleado
-            [ForeignKey("IdEmpleado")]
-            public Empleados Empleado { get; set; } = null!;
-        }
+        // Propiedad de navegación hacia Empleado
+        [ForeignKey("IdEmpleado")]
+        public Empleados Empleado { get; set; } = null!;
     }
 }
